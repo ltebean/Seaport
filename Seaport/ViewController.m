@@ -28,7 +28,7 @@
     
 }
 - (IBAction)refresh:(id)sender {
-    NSString *rootPath = [self.searport packagePath:@"shop"];
+    NSString *rootPath = [self.searport packagePath:@"index"];
     if(rootPath){
         NSString *filePath = [rootPath stringByAppendingPathComponent:@"index.html"];
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL fileURLWithPath:filePath]];
@@ -40,6 +40,11 @@
 }
 
 -(void)webViewDidFinishLoad:(UIWebView *)webView{
+    
+}
+
+-(void) webViewDidStartLoad:(UIWebView *)webView
+{
     
 }
 

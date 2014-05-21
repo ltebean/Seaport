@@ -78,7 +78,7 @@
 
 -(void) updateRemote
 {
-    [self.http sendRequestToPath:@"/package/_design/app/_view/package" method:@"GET" params:@{@"key":[NSString stringWithFormat:@"\"%@\"",self.appKey]} cookies:nil completionHandler:^(NSDictionary* result) {
+    [self.http sendRequestToPath:@"/seaport/_design/app/_view/byApp" method:@"GET" params:@{@"key":[NSString stringWithFormat:@"\"%@\"",self.appKey]} cookies:nil completionHandler:^(NSDictionary* result) {
         NSDictionary* localPackages = [self loadConfig][@"packages"];
         for(NSDictionary* row in result[@"rows"]){
             NSDictionary* package=row[@"value"];
