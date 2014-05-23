@@ -31,7 +31,7 @@
     NSMutableURLRequest* request=[self generateRequestWithURL:finalUrl method:method params:params cookies:cookies];
     
     [NSURLConnection sendAsynchronousRequest:request queue:self.operationQueue completionHandler:^(NSURLResponse * response, NSData *data, NSError *error) {
-        if(!error){
+        if(!error && [(NSHTTPURLResponse*)response statusCode] == 200 ){
             id result = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
             completionHandler(result);
         }else{
@@ -40,7 +40,7 @@
     }];
 }
 
--(void)postJsonToPath:(NSString*)path id:object cookies:(NSDictionary*)cookies completionHandler:(void (^)(id)) completionHandler
+-(void)postJsonToPath:(NSString*)path body:(id)object cookies:(NSDictionary*)cookies  completionHandler:(void (^)(id)) completionHandler;
 {
     NSString* finalUrl=[NSString stringWithFormat:@"http://%@%@",self.domain,path];
     NSMutableURLRequest  *request=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:finalUrl]];
@@ -51,7 +51,7 @@
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     [NSURLConnection sendAsynchronousRequest:request queue:self.operationQueue completionHandler:^(NSURLResponse * response, NSData *data, NSError *error) {
-        if(!error){
+        if(!error && [(NSHTTPURLResponse*)response statusCode] == 200 ){
             id result = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
             completionHandler(result);
         }else{
@@ -63,10 +63,15 @@
 -(void)downloadFileAtPath:(NSString*)path params:(NSDictionary*)params cookies:(NSDictionary*)cookies  completionHandler:(void (^)(id)) completionHandler
 {
     NSString* finalUrl=[NSString stringWithFormat:@"http://%@%@",self.domain,path];
-    NSMutableURLRequest* request=[self generateRequestWithURL:finalUrl method:@"GET" params:params cookies:cookies];
+    [self downloadFileAtUrl:finalUrl params:params cookies:cookies completionHandler:completionHandler];
+}
+
+-(void)downloadFileAtUrl:(NSString*)url params:(NSDictionary*)params cookies:(NSDictionary*)cookies  completionHandler:(void (^)(id)) completionHandler
+{
+    NSMutableURLRequest* request=[self generateRequestWithURL:url method:@"GET" params:params cookies:cookies];
     
     [NSURLConnection sendAsynchronousRequest:request queue:self.operationQueue completionHandler:^(NSURLResponse * response, NSData *data, NSError *error) {
-        if(!error){
+        if(!error && [(NSHTTPURLResponse*)response statusCode] == 200 ){
             completionHandler(data);
         }else{
             completionHandler(nil);

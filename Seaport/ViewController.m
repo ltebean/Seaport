@@ -20,7 +20,7 @@
     [super viewDidLoad];
     
     self.webView.delegate=self;
-    self.searport = [[Seaport alloc]initWithAppKey:@"test" appSecret:@"secret" serverDomain:@"192.168.9.49:5984"];
+    self.searport = [[Seaport alloc]initWithAppKey:@"Nova" appSecret:@"secret" serverDomain:@"127.0.0.1:9000"];
 }
 
 -(void) viewWillAppear:(BOOL)animated  {
@@ -28,9 +28,9 @@
     
 }
 - (IBAction)refresh:(id)sender {
-    NSString *rootPath = [self.searport packagePath:@"index"];
+    NSString *rootPath = [self.searport packagePath:@"rocket"];
     if(rootPath){
-        NSString *filePath = [rootPath stringByAppendingPathComponent:@"index.html"];
+        NSString *filePath = [rootPath stringByAppendingPathComponent:@"test/runner.html"];
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL fileURLWithPath:filePath]];
         [self.webView loadRequest:request];
     }

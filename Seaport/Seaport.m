@@ -78,14 +78,13 @@
 
 -(void) updateRemote
 {
-    [self.http sendRequestToPath:@"/seaport/_design/app/_view/byApp" method:@"GET" params:@{@"key":[NSString stringWithFormat:@"\"%@\"",self.appKey]} cookies:nil completionHandler:^(NSDictionary* result) {
+    [self.http postJsonToPath:[NSString stringWithFormat:@"/api/app/%@/checkupdate",self.appKey] body:@{@"cityId":@1} cookies:nil completionHandler:^(NSArray* result) {
         NSDictionary* localPackages = [self loadConfig][@"packages"];
-        for(NSDictionary* row in result[@"rows"]){
-            NSDictionary* package=row[@"value"];
+        for(NSDictionary* package in result){
             NSString *packageName = package[@"name"];
             NSDictionary* localPackage=localPackages[packageName];
-            if(!localPackage || ![localPackage[@"available"] isEqualToString:package[@"latest"]]){
-                [self updatePackage:package toVersion:package[@"latest"]];
+            if(!localPackage || ![localPackage[@"available"] isEqualToString:package[@"activeVersion"]]){
+                [self updatePackage:package toVersion:package[@"activeVersion"]];
             }
         }
     }];
@@ -111,11 +110,14 @@
         return;
     }
     
-    [self.http downloadFileAtPath:package[@"zip"] params:nil cookies:nil completionHandler:^(NSData* data) {
+    [self.http downloadFileAtUrl:package[@"zipPath"] params:nil cookies:nil completionHandler:^(NSData* data) {
         if(!data){
             NSLog(@"no data received");
             return;
         }
+        
+        NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+        
         // write data to zip
         NSLog(@"save file to path %@",zipPath);
         if(![data writeToFile:zipPath atomically:YES]){
