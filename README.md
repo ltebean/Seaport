@@ -2,7 +2,7 @@
 Seaport makes it easy to ship static resources to ios client. You just need to add a few lines of code, Seaport will handle all the rest things, including:
 
 * download package
-* manager versions
+* manage versions
 * syncronize local package
 * remove unused package
 
@@ -55,4 +55,4 @@ When you need to deliver a new package to app, All the operation is made on couc
 
 * First upload the zip file as attachment in the package doc, the name of  the zip file is by convention "packageName-version".
 * Then change the activeVersion to the version you want.
-
+* When the next time [seaport checkupdate] gets called, the new package will be delivered to the app
