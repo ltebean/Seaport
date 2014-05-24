@@ -1,6 +1,6 @@
 //
-//  API.h
-//  Hybrid
+//  Seaport.h
+//  Seaport
 //
 //  Created by ltebean on 14-5-14.
 //  Copyright (c) 2014年 ltebean. All rights reserved.
@@ -20,7 +20,7 @@
 @interface Seaport : NSObject
 @property(nonatomic,weak) id<SeaportDelegate> deletage;
 
-- (id) initWithAppKey:(NSString*) appKey appSecret:(NSString*) appSecret serverDomain:(NSString*) domain;
+- (id) initWithAppKey:(NSString*) appKey serverAddress:(NSString*) address;
 
 - (void) checkUpdate;
 

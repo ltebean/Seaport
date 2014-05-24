@@ -1,6 +1,6 @@
 //
-//  HTTP.m
-//  Hybrid
+//  SeaportHttp.m
+//  Seaport
 //
 //  Created by ltebean on 14-5-14.
 //  Copyright (c) 2014年 ltebean. All rights reserved.
@@ -40,7 +40,7 @@
     }];
 }
 
--(void)postJsonToPath:(NSString*)path id:object cookies:(NSDictionary*)cookies completionHandler:(void (^)(id)) completionHandler
+-(void)postJsonToPath:(NSString*)path body:(id)object cookies:(NSDictionary*)cookies  completionHandler:(void (^)(id)) completionHandler
 {
     NSString* finalUrl=[NSString stringWithFormat:@"http://%@%@",self.domain,path];
     NSMutableURLRequest  *request=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:finalUrl]];

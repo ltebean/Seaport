@@ -1,6 +1,6 @@
 //
-//  API.m
-//  Hybrid
+//  Seaport.m
+//  Seaport
 //
 //  Created by ltebean on 14-5-14.
 //  Copyright (c) 2014年 ltebean. All rights reserved.
@@ -11,21 +11,25 @@
 #import "SSZipArchive.h"
 
 #define CONFIG_FILE @"config.plist"
+#define ERROR_DOMAIN @"io.seaport"
+
+typedef enum {
+    DownloadZipError = -1000,
+    UnZipError,
+}Error;
 
 @interface Seaport ()
 @property(nonatomic,copy) NSString* appKey;
-@property(nonatomic,copy) NSString* appSecret;
 @property(nonatomic,strong) NSString* packageDirectory;
 @property(nonatomic,strong) SeaportHttp* http;
 @end
 
 @implementation Seaport
-- (id) initWithAppKey:(NSString*) appKey appSecret:(NSString*) appSecret serverDomain:(NSString*) serverDomain
+- (id) initWithAppKey:(NSString*) appKey serverAddress:(NSString*) address
 {
     if (self = [super init]) {
         self.appKey=appKey;
-        self.appSecret=appSecret;
-        self.http = [[SeaportHttp alloc]initWithDomain:serverDomain];
+        self.http = [[SeaportHttp alloc]initWithDomain:address];
         self.packageDirectory= [self createPackageFolderIfNeeded];
         if(![self loadConfig]){
             [self saveConfig:@{@"packages":@{}}];
@@ -42,9 +46,6 @@
     BOOL exists=[[NSFileManager defaultManager] fileExistsAtPath:packageDirectory];
     if (!exists) {
         [[NSFileManager defaultManager] createDirectoryAtPath:packageDirectory withIntermediateDirectories:YES attributes:nil error:nil];
-        NSLog(@"create package folder: %@",packageDirectory);
-    }else{
-        NSLog(@"package folder already exist");
     }
     return packageDirectory;
 }
@@ -58,20 +59,16 @@
 -(void) updateLocal
 {
     @synchronized(self) {
-        BOOL needsUpdate=NO;
         NSMutableDictionary * config=[self loadConfig];
         NSMutableDictionary * packages = config[@"packages"];
         for(NSString* packageName in [packages allKeys]){
             NSMutableDictionary* package = packages[packageName];
             if(![package[@"current"] isEqualToString: package[@"available"]]){
-                NSLog(@"update local package %@ to version %@",packageName,package[@"available"]);
                 [self removeLocalPackage:packageName version:package[@"current"]];
                 package[@"current"]=package[@"available"];
-                needsUpdate=YES;
+                [self saveConfig:config];
+                [self.deletage seaport:self didFinishUpdatePackage:packageName version:package[@"current"]];
             }
-        }
-        if(needsUpdate){
-            [self saveConfig:config];
         }
     }
 }
@@ -84,55 +81,55 @@
             NSDictionary* package=row[@"value"];
             NSString *packageName = package[@"name"];
             NSDictionary* localPackage=localPackages[packageName];
-            if(!localPackage || ![localPackage[@"available"] isEqualToString:package[@"latest"]]){
-                [self updatePackage:package toVersion:package[@"latest"]];
+            if(!localPackage || ![localPackage[@"available"] isEqualToString:package[@"activeVersion"]]){
+                [self updatePackage:package toVersion:package[@"activeVersion"]];
             }
         }
     }];
-
 }
 
 -(BOOL)removeLocalPackage:(NSString*) packageName version:(NSString*) version
 {
     NSString *path = [self packagePathWithName:packageName version:version];
-    NSLog(@"remove folder: %@",path);
     return [[NSFileManager defaultManager]removeItemAtPath:path error:nil];
 }
 
-
 -(void) updatePackage:(NSDictionary*) package toVersion:(NSString*) version
 {
+    
     NSString *packageName = package[@"name"];
     NSString *destinationPath = [self packagePathWithName:packageName version:version];
     NSString *zipPath = [destinationPath stringByAppendingString:@".zip"];
     
     if([[NSFileManager defaultManager] fileExistsAtPath:destinationPath]){
-        NSLog(@"package already exsits: %@",destinationPath);
         return;
     }
     
+    [self.deletage seaport:self didStartDownloadPackage:packageName version:version];
+
     [self.http downloadFileAtPath:package[@"zip"] params:nil cookies:nil completionHandler:^(NSData* data) {
         if(!data){
-            NSLog(@"no data received");
+            [self.deletage seaport:self didFailDownloadPackage:packageName version:version withError:[NSError errorWithDomain:ERROR_DOMAIN code:DownloadZipError userInfo:nil]];
             return;
         }
         // write data to zip
-        NSLog(@"save file to path %@",zipPath);
         if(![data writeToFile:zipPath atomically:YES]){
-            NSLog(@"failed to save file to path %@",zipPath);
+            [self.deletage seaport:self didFailDownloadPackage:packageName version:version withError:[NSError errorWithDomain:ERROR_DOMAIN code:DownloadZipError userInfo:nil]];
             return;
         }
         
         //unzip
-        NSLog(@"unzip file to path %@",destinationPath);
         if(![SSZipArchive unzipFileAtPath:zipPath toDestination:destinationPath]){
-            NSLog(@"failed to unzip file: %@",zipPath);
             [[NSFileManager defaultManager]removeItemAtPath:zipPath error:nil];
+            [self.deletage seaport:self didFailDownloadPackage:packageName version:version withError:[NSError errorWithDomain:ERROR_DOMAIN code:UnZipError userInfo:nil]];
             return;
         }
         [[NSFileManager defaultManager]removeItemAtPath:zipPath error:nil];
         
+        [self.deletage seaport:self didFinishDownloadPackage:packageName version:version];
+
         // update config
+        BOOL localUpdated=NO;
         @synchronized(self) {
             NSMutableDictionary * config=[self loadConfig];
             NSMutableDictionary * packages = config[@"packages"];
@@ -141,10 +138,14 @@
                 package=[[NSMutableDictionary alloc]init];
                 packages[packageName]=package;
                 package[@"current"]=version;
+                localUpdated=YES;
             }
             package[@"available"]=version;
             package[@"time"]=[NSDate date];
             [self saveConfig:config];
+        }
+        if(localUpdated){
+            [self.deletage seaport:self didFinishUpdatePackage:packageName version:version];
         }
     }];
 }
@@ -188,7 +189,5 @@
     }    
     return path;
 }
-
-
 
 @end
