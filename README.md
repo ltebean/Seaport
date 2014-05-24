@@ -10,12 +10,12 @@ Seaport makes it easy to ship static resources to ios client. You just need to a
 
 ##Getting Started
 
-####Install CouchDB
+####1. Install CouchDB
 Seaport uses couchdb as its backend, so you must install couchdb first. 
 
 After finished, you should create a database called "seaport" and import all the views by replication from "http://couch.seaport.io/seaport"
 
-####Intergrate Seaport in Your App
+####2. Intergrate Seaport in Your App
 First init a Seaport client by specifing the appName and couchdb address:
 
 	Seaport *seaport = [[Seaport alloc]initWithAppKey:@"test" serverAddress:@"192.168.9.49:5984"];
@@ -44,7 +44,7 @@ Seaport protocal:
 	-(void)seaport:(Seaport*)seaport didFinishUpdatePackage:(NSString*) packageName version:(NSString*) version;	
 
 
-####Deliver a new package
+####3. Deliver a new package
 
 When you need to deliver a new package to app, All the operation is made on couchdb side;
 
