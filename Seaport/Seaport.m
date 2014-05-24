@@ -20,15 +20,17 @@ typedef enum {
 
 @interface Seaport ()
 @property(nonatomic,copy) NSString* appKey;
+@property(nonatomic,copy) NSString* dbName;
 @property(nonatomic,strong) NSString* packageDirectory;
 @property(nonatomic,strong) SeaportHttp* http;
 @end
 
 @implementation Seaport
-- (id) initWithAppKey:(NSString*) appKey serverAddress:(NSString*) address
+- (id) initWithAppKey:(NSString*) appKey serverAddress:(NSString*) address dbName:(NSString *)dbName
 {
     if (self = [super init]) {
         self.appKey=appKey;
+        self.dbName=dbName;
         self.http = [[SeaportHttp alloc]initWithDomain:address];
         self.packageDirectory= [self createPackageFolderIfNeeded];
         if(![self loadConfig]){
@@ -75,7 +77,8 @@ typedef enum {
 
 -(void) updateRemote
 {
-    [self.http sendRequestToPath:@"/seaport/_design/app/_view/byApp" method:@"GET" params:@{@"key":[NSString stringWithFormat:@"\"%@\"",self.appKey]} cookies:nil completionHandler:^(NSDictionary* result) {
+    NSString *path = [NSString stringWithFormat:@"/%@/_design/app/_view/byApp",self.dbName];
+    [self.http sendRequestToPath:path method:@"GET" params:@{@"key":[NSString stringWithFormat:@"\"%@\"",self.appKey]} cookies:nil completionHandler:^(NSDictionary* result) {
         NSDictionary* localPackages = [self loadConfig][@"packages"];
         for(NSDictionary* row in result[@"rows"]){
             NSDictionary* package=row[@"value"];
@@ -107,7 +110,8 @@ typedef enum {
     
     [self.deletage seaport:self didStartDownloadPackage:packageName version:version];
 
-    [self.http downloadFileAtPath:package[@"zip"] params:nil cookies:nil completionHandler:^(NSData* data) {
+    NSString *path = [NSString stringWithFormat:@"/%@/%@",self.dbName,package[@"zip"]];
+    [self.http downloadFileAtPath:path params:nil cookies:nil completionHandler:^(NSData* data) {
         if(!data){
             [self.deletage seaport:self didFailDownloadPackage:packageName version:version withError:[NSError errorWithDomain:ERROR_DOMAIN code:DownloadZipError userInfo:nil]];
             return;

@@ -20,7 +20,7 @@
 @interface Seaport : NSObject
 @property(nonatomic,weak) id<SeaportDelegate> deletage;
 
-- (id) initWithAppKey:(NSString*) appKey serverAddress:(NSString*) address;
+- (id) initWithAppKey:(NSString*) appKey serverAddress:(NSString*) address dbName:(NSString*) dbName;
 
 - (void) checkUpdate;
 

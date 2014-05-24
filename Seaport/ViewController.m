@@ -20,7 +20,7 @@
     [super viewDidLoad];
     
     self.webView.delegate=self;
-    self.seaport = [[Seaport alloc]initWithAppKey:@"TestApp" serverAddress:@"223.4.15.141:9984"];
+    self.seaport = [[Seaport alloc]initWithAppKey:@"TestApp" serverAddress:@"223.4.15.141:9984" dbName:@"seaport"];
     self.seaport.deletage=self;
 }
 
