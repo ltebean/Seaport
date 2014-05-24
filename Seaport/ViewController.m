@@ -20,7 +20,7 @@
     [super viewDidLoad];
     
     self.webView.delegate=self;
-    self.seaport = [[Seaport alloc]initWithAppKey:@"test" serverAddress:@"192.168.9.49:5984"];
+    self.seaport = [[Seaport alloc]initWithAppKey:@"TestApp" serverAddress:@"223.4.15.141:9984"];
     self.seaport.deletage=self;
 }
 
@@ -29,7 +29,7 @@
     
 }
 - (IBAction)refresh:(id)sender {
-    NSString *rootPath = [self.seaport packagePath:@"index"];
+    NSString *rootPath = [self.seaport packagePath:@"helloworld"];
     if(rootPath){
         NSString *filePath = [rootPath stringByAppendingPathComponent:@"index.html"];
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL fileURLWithPath:filePath]];
