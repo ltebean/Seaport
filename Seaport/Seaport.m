@@ -23,6 +23,7 @@ typedef enum {
 @property(nonatomic,copy) NSString* dbName;
 @property(nonatomic,strong) NSString* packageDirectory;
 @property(nonatomic,strong) SeaportHttp* http;
+@property(nonatomic,strong) NSOperationQueue* operationQueue;
 @end
 
 @implementation Seaport
@@ -34,6 +35,8 @@ typedef enum {
         if(![self loadConfig]){
             [self saveConfig:@{@"packages":@{}}];
         }
+        self.operationQueue=[[NSOperationQueue alloc]init];
+        [self.operationQueue setMaxConcurrentOperationCount:1];
         NSString * serverAddress =[NSString stringWithFormat:@"%@:%@",host,port];
         self.http = [[SeaportHttp alloc]initWithDomain:serverAddress];
     }
@@ -44,6 +47,8 @@ typedef enum {
 {
     NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
     NSString * packageDirectory = [documentsDirectoryURL URLByAppendingPathComponent:@"packages"].path;
+    
+    NSLog(@"%@",packageDirectory);
 
     BOOL exists=[[NSFileManager defaultManager] fileExistsAtPath:packageDirectory];
     if (!exists) {
@@ -67,8 +72,13 @@ typedef enum {
             NSMutableDictionary* package = packages[packageName];
             if(![package[@"current"] isEqualToString: package[@"available"]]){
                 [self removeLocalPackage:packageName version:package[@"current"]];
+                NSString* oldVersion=[package[@"current"] copy];
                 package[@"current"]=package[@"available"];
                 [self saveConfig:config];
+                // remove the old one asynchronously
+                [self.operationQueue addOperationWithBlock:^{
+                    [self removeLocalPackage:packageName version:oldVersion];
+                }];
                 [self.deletage seaport:self didFinishUpdatePackage:packageName version:package[@"current"]];
             }
         }
@@ -99,7 +109,6 @@ typedef enum {
 
 -(void) updatePackage:(NSDictionary*) package toVersion:(NSString*) version
 {
-    
     NSString *packageName = package[@"name"];
     NSString *destinationPath = [self packagePathWithName:packageName version:version];
     NSString *zipPath = [destinationPath stringByAppendingString:@".zip"];
