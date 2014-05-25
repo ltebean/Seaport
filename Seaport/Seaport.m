@@ -19,23 +19,23 @@ typedef enum {
 }Error;
 
 @interface Seaport ()
-@property(nonatomic,copy) NSString* appKey;
+@property(nonatomic,copy) NSString* appName;
 @property(nonatomic,copy) NSString* dbName;
 @property(nonatomic,strong) NSString* packageDirectory;
 @property(nonatomic,strong) SeaportHttp* http;
 @end
 
 @implementation Seaport
-- (id) initWithAppKey:(NSString*) appKey serverAddress:(NSString*) address dbName:(NSString *)dbName
-{
+- (id) initWithAppName:(NSString*) appName serverHost:(NSString*) host sevrerPort:(NSString*) port dbName:(NSString*) dbName;{
     if (self = [super init]) {
-        self.appKey=appKey;
+        self.appName=appName;
         self.dbName=dbName;
-        self.http = [[SeaportHttp alloc]initWithDomain:address];
         self.packageDirectory= [self createPackageFolderIfNeeded];
         if(![self loadConfig]){
             [self saveConfig:@{@"packages":@{}}];
         }
+        NSString * serverAddress =[NSString stringWithFormat:@"%@:%@",host,port];
+        self.http = [[SeaportHttp alloc]initWithDomain:serverAddress];
     }
     return self;
 }
@@ -78,7 +78,7 @@ typedef enum {
 -(void) updateRemote
 {
     NSString *path = [NSString stringWithFormat:@"/%@/_design/app/_view/byApp",self.dbName];
-    [self.http sendRequestToPath:path method:@"GET" params:@{@"key":[NSString stringWithFormat:@"\"%@\"",self.appKey]} cookies:nil completionHandler:^(NSDictionary* result) {
+    [self.http sendRequestToPath:path method:@"GET" params:@{@"key":[NSString stringWithFormat:@"\"%@\"",self.appName]} cookies:nil completionHandler:^(NSDictionary* result) {
         NSDictionary* localPackages = [self loadConfig][@"packages"];
         for(NSDictionary* row in result[@"rows"]){
             NSDictionary* package=row[@"value"];
