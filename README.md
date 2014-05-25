@@ -22,6 +22,7 @@ First init a Seaport client by specifing the appName, couchdb address, and  data
                                         	serverHost:@"223.4.15.141"
                                         	sevrerPort:@"9984"
                                             	dbName:@"seaport"];
+
 Check whether there are some updates, usually it should be called when app starts:
 
 	[seaport checkUpdate];
