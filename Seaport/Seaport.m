@@ -13,6 +13,8 @@
 #define CONFIG_FILE @"config.plist"
 #define ERROR_DOMAIN @"io.seaport"
 
+#define fm [NSFileManager defaultManager]
+
 typedef enum {
     DownloadZipError = -1000,
     UnZipError,
@@ -45,14 +47,14 @@ typedef enum {
 
 -(NSString *) createPackageFolderIfNeeded
 {
-    NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+    NSURL *documentsDirectoryURL = [fm URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
     NSString * packageDirectory = [documentsDirectoryURL URLByAppendingPathComponent:@"packages"].path;
     
     NSLog(@"%@",packageDirectory);
 
-    BOOL exists=[[NSFileManager defaultManager] fileExistsAtPath:packageDirectory];
+    BOOL exists=[fm fileExistsAtPath:packageDirectory];
     if (!exists) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:packageDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+        [fm createDirectoryAtPath:packageDirectory withIntermediateDirectories:YES attributes:nil error:nil];
     }
     return packageDirectory;
 }
@@ -104,7 +106,7 @@ typedef enum {
 -(BOOL)removeLocalPackage:(NSString*) packageName version:(NSString*) version
 {
     NSString *path = [self packagePathWithName:packageName version:version];
-    return [[NSFileManager defaultManager]removeItemAtPath:path error:nil];
+    return [fm removeItemAtPath:path error:nil];
 }
 
 -(void) updatePackage:(NSDictionary*) package toVersion:(NSString*) version
@@ -113,7 +115,7 @@ typedef enum {
     NSString *destinationPath = [self packagePathWithName:packageName version:version];
     NSString *zipPath = [destinationPath stringByAppendingString:@".zip"];
     
-    if([[NSFileManager defaultManager] fileExistsAtPath:destinationPath]){
+    if([fm fileExistsAtPath:destinationPath]){
         return;
     }
     
@@ -133,11 +135,11 @@ typedef enum {
         
         //unzip
         if(![SSZipArchive unzipFileAtPath:zipPath toDestination:destinationPath]){
-            [[NSFileManager defaultManager]removeItemAtPath:zipPath error:nil];
+            [fm removeItemAtPath:zipPath error:nil];
             [self.deletage seaport:self didFailDownloadPackage:packageName version:version withError:[NSError errorWithDomain:ERROR_DOMAIN code:UnZipError userInfo:nil]];
             return;
         }
-        [[NSFileManager defaultManager]removeItemAtPath:zipPath error:nil];
+        [fm removeItemAtPath:zipPath error:nil];
         
         [self.deletage seaport:self didFinishDownloadPackage:packageName version:version];
 
@@ -166,8 +168,8 @@ typedef enum {
 -(NSString*) packagePathWithName:(NSString*) packageName version:(NSString*)version
 {
     NSString * packageRootPath = [self.packageDirectory stringByAppendingPathComponent:packageName];
-    if(![[NSFileManager defaultManager] fileExistsAtPath:packageName]){
-        [[NSFileManager defaultManager] createDirectoryAtPath:packageRootPath withIntermediateDirectories:YES attributes:nil error:nil];
+    if(![fm fileExistsAtPath:packageName]){
+        [fm createDirectoryAtPath:packageRootPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     return [packageRootPath stringByAppendingPathComponent:version];
 }
@@ -197,7 +199,7 @@ typedef enum {
     }
     NSString* path=[self packagePathWithName:packageName version:package[@"current"]];
     
-    if(![[NSFileManager defaultManager] fileExistsAtPath:path]){
+    if(![fm fileExistsAtPath:path]){
         return nil;
     }    
     return path;
