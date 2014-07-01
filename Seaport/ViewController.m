@@ -32,7 +32,7 @@
     
 }
 - (IBAction)refresh:(id)sender {
-    NSString *rootPath = [self.seaport packagePath:@"helloworld"];
+    NSString *rootPath = [self.seaport packagePath:@"hello-world"];
     if(rootPath){
         NSString *filePath = [rootPath stringByAppendingPathComponent:@"index.html"];
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL fileURLWithPath:filePath]];
