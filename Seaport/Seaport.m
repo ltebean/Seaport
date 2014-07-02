@@ -29,6 +29,19 @@ typedef enum {
 @end
 
 @implementation Seaport
+
+static Seaport *sharedInstance;
+
++(Seaport *)sharedInstance{
+    @synchronized(self)
+    {
+        if (!sharedInstance){
+            sharedInstance = [[Seaport alloc] initWithAppName:APP_NAME serverHost:SERVER_HOST sevrerPort:SERVER_PORT dbName:DB_NAME];
+        }
+        return sharedInstance;
+    }
+}
+
 - (id) initWithAppName:(NSString*) appName serverHost:(NSString*) host sevrerPort:(NSString*) port dbName:(NSString*) dbName;{
     if (self = [super init]) {
         self.appName=appName;

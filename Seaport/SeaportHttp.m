@@ -15,6 +15,8 @@
 
 @implementation SeaportHttp
 
+
+
 - (id) initWithDomain:(NSString*) domain
 {
     if (self = [super init]) {

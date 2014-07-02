@@ -23,10 +23,7 @@
 {
     [super viewDidLoad];
 
-    self.seaport = [[Seaport alloc]initWithAppName:@"TestApp"
-                                        serverHost:@"223.4.15.141"
-                                        sevrerPort:@"9984"
-                                            dbName:@"seaport"];
+    self.seaport = [Seaport sharedInstance];
     self.seaport.deletage=self;
     self.bridge = [SeaportWebViewBridge bridgeForWebView:self.webView param:@{@"city":@"shanghai",@"name": @"ltebean"} dataHandler:^(id data) {
         NSLog(@"receive data: %@",data);
@@ -49,6 +46,11 @@
         [self.webView loadRequest:request];
     }
 }
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+}
+
 - (IBAction)check:(id)sender {
     [self.seaport checkUpdate];
 }
