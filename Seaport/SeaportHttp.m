@@ -20,7 +20,7 @@
     if (self = [super init]) {
         self.domain=domain;
         self.operationQueue=[[NSOperationQueue alloc]init];
-        [self.operationQueue setMaxConcurrentOperationCount:5];
+        [self.operationQueue setMaxConcurrentOperationCount:3];
     }
     return self;
 }

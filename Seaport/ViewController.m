@@ -8,9 +8,13 @@
 
 #import "ViewController.h"
 #import "Seaport.h"
+#import "SeaportHttp.h"
+#import "SeaportWebViewBridge.h"
+
 @interface ViewController  () <UIWebViewDelegate,SeaportDelegate>
 @property (nonatomic,strong) Seaport* seaport ;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property(strong,nonatomic) SeaportWebViewBridge *bridge;
 @end
 
 @implementation ViewController
@@ -18,13 +22,15 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.webView.delegate=self;
+
     self.seaport = [[Seaport alloc]initWithAppName:@"TestApp"
                                         serverHost:@"223.4.15.141"
                                         sevrerPort:@"9984"
                                             dbName:@"seaport"];
     self.seaport.deletage=self;
+    self.bridge = [SeaportWebViewBridge bridgeForWebView:self.webView param:@{@"city":@"shanghai",@"name": @"ltebean"} dataHandler:^(id data) {
+        NSLog(@"receive data: %@",data);
+    }];
 }
 
 -(void) viewWillAppear:(BOOL)animated  {
@@ -32,10 +38,14 @@
     
 }
 - (IBAction)refresh:(id)sender {
-    NSString *rootPath = [self.seaport packagePath:@"hello-world"];
+    
+    NSString *rootPath = [self.seaport packagePath:@"index"];
     if(rootPath){
         NSString *filePath = [rootPath stringByAppendingPathComponent:@"index.html"];
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL fileURLWithPath:filePath]];
+        
+        NSMutableURLRequest *request=[NSMutableURLRequest requestWithURL:[NSURL fileURLWithPath:filePath]
+                                        cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                    timeoutInterval:10000];
         [self.webView loadRequest:request];
     }
 }
@@ -63,17 +73,6 @@
     NSLog(@"update local package: %@@%@",packageName,version);
 }
 
--(void)webViewDidFinishLoad:(UIWebView *)webView{
-    
-}
 
--(void) webViewDidStartLoad:(UIWebView *)webView
-{
-    
-}
-
--(void) webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error{
-    NSLog(@"%@",error.description);
-}
 
 @end
