@@ -18,39 +18,47 @@ After finished, create a database and import all the views and examples by repli
 ####2. Intergrate Seaport in Your App
 First init a Seaport client by specifing the appName, couchdb address, and  database name:
 
-	Seaport *seaport = [[Seaport alloc]initWithAppName:@"TestApp"
-                                        	serverHost:@"223.4.15.141"
-                                        	sevrerPort:@"9984"
-                                            	dbName:@"seaport"];
+```oc
+Seaport *seaport = [[Seaport alloc]initWithAppName:@"TestApp"
+                                      	serverHost:@"223.4.15.141"
+                                      	sevrerPort:@"9984"
+                                          	dbName:@"seaport"];
+```
 
 Check whether there are some updates, usually it should be called when app starts:
 
-	[seaport checkUpdate];
-	
+```oc
+[seaport checkUpdate];
+```
+
 Then you could ask Seaport where is your package's root path, then load static resources from that path:
 
-	NSString *rootPath = [seaport packagePath:@"helloworld"];
-	if(rootPath){
-        NSString *filePath = [rootPath stringByAppendingPathComponent:@"index.html"];
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL fileURLWithPath:filePath]];
-        [self.webView loadRequest:request];
-    }
+```oc
+NSString *rootPath = [seaport packagePath:@"helloworld"];
+if(rootPath){
+    NSString *filePath = [rootPath stringByAppendingPathComponent:@"index.html"];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL fileURLWithPath:filePath]];
+    [self.webView loadRequest:request];
+}
+```
 	
 If you are interested in the life cycle of package management, you could implement Seaport protocal and set the delegate to self:
 
-	seaport.delegate = self;
-
+```oc
+seaport.delegate = self;
+```
 
 Seaport protocal:
 
-	-(void)seaport:(Seaport*)seaport didStartDownloadPackage:(NSString*) packageName version:(NSString*) version;
+```
+-(void)seaport:(Seaport*)seaport didStartDownloadPackage:(NSString*) packageName version:(NSString*) version;
 	
-	-(void)seaport:(Seaport*)seaport didFinishDownloadPackage:(NSString*) packageName version:(NSString*) version;
+-(void)seaport:(Seaport*)seaport didFinishDownloadPackage:(NSString*) packageName version:(NSString*) version;
 	
-	-(void)seaport:(Seaport*)seaport didFailDownloadPackage:(NSString*) packageName version:(NSString*) version withError:(NSError*) error;
+-(void)seaport:(Seaport*)seaport didFailDownloadPackage:(NSString*) packageName version:(NSString*) version withError:(NSError*) error;
 	
-	-(void)seaport:(Seaport*)seaport didFinishUpdatePackage:(NSString*) packageName version:(NSString*) version;	
-
+-(void)seaport:(Seaport*)seaport didFinishUpdatePackage:(NSString*) packageName version:(NSString*) version;	
+```
 
 ####3. Deliver a new package
 

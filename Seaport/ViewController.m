@@ -22,12 +22,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
     self.seaport = [Seaport sharedInstance];
     self.seaport.deletage=self;
     self.bridge = [SeaportWebViewBridge bridgeForWebView:self.webView param:@{@"city":@"shanghai",@"name": @"ltebean"} dataHandler:^(id data) {
         NSLog(@"receive data: %@",data);
     }];
+    
 }
 
 -(void) viewWillAppear:(BOOL)animated  {
@@ -39,10 +40,11 @@
     NSString *rootPath = [self.seaport packagePath:@"index"];
     if(rootPath){
         NSString *filePath = [rootPath stringByAppendingPathComponent:@"index.html"];
+        NSURL *localURL=[NSURL fileURLWithPath:filePath];
         
-        NSMutableURLRequest *request=[NSMutableURLRequest requestWithURL:[NSURL fileURLWithPath:filePath]
-                                        cachePolicy:NSURLRequestReloadIgnoringCacheData
-                                    timeoutInterval:10000];
+        NSURL *debugURL=[NSURL URLWithString:@"http://localhost:8080/index.html"];
+        
+        NSURLRequest *request=[NSURLRequest requestWithURL:localURL];
         [self.webView loadRequest:request];
     }
 }
@@ -53,6 +55,8 @@
 
 - (IBAction)check:(id)sender {
     [self.seaport checkUpdate];
+    [self.bridge sendData:@"btn-check clicked"];
+    
 }
 
 -(void)seaport:(Seaport*)seaport didStartDownloadPackage:(NSString*) packageName version:(NSString*) version

@@ -30,9 +30,9 @@
     if (self = [super init]) {
         self.param=param;
         self.bridge=[WebViewJavascriptBridge bridgeForWebView:webView handler:^(id data, WVJBResponseCallback responseCallback) {
-            responseCallback(@"Right back atcha");
+            handler(data);
         }];
-
+        
         //[WebViewJavascriptBridge enableLogging];
         
         [self.bridge registerHandler:@"userdefaults:set" handler:^(id data, WVJBResponseCallback responseCallback){
@@ -67,17 +67,13 @@
             responseCallback(self.param);
         }];
         
-        [self.bridge registerHandler:@"data:send" handler:^(id data, WVJBResponseCallback responseCallback){
-            handler(data);
-        }];
-    
     }
     return self;
 }
 
 -(void) sendData:(id) data
 {
-    [self.bridge callHandler:@"data" data:data];
+    [self.bridge send:data];
 }
 
 @end

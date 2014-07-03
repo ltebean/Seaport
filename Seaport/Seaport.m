@@ -64,7 +64,7 @@ static Seaport *sharedInstance;
     NSString * packageDirectory = [documentsDirectoryURL URLByAppendingPathComponent:@"packages"].path;
     
     NSLog(@"%@",packageDirectory);
-
+    
     BOOL exists=[fm fileExistsAtPath:packageDirectory];
     if (!exists) {
         [fm createDirectoryAtPath:packageDirectory withIntermediateDirectories:YES attributes:nil error:nil];
@@ -133,7 +133,7 @@ static Seaport *sharedInstance;
     }
     
     [self.deletage seaport:self didStartDownloadPackage:packageName version:version];
-
+    
     NSString *path = [NSString stringWithFormat:@"/%@/%@",self.dbName,package[@"zip"]];
     [self.http downloadFileAtPath:path params:nil cookies:nil completionHandler:^(NSData* data) {
         if(!data){
@@ -155,7 +155,7 @@ static Seaport *sharedInstance;
         [fm removeItemAtPath:zipPath error:nil];
         
         [self.deletage seaport:self didFinishDownloadPackage:packageName version:version];
-
+        
         // update config
         BOOL localUpdated=NO;
         @synchronized(self) {
@@ -214,7 +214,7 @@ static Seaport *sharedInstance;
     
     if(![fm fileExistsAtPath:path]){
         return nil;
-    }    
+    }
     return path;
 }
 
