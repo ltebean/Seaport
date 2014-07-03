@@ -53,7 +53,10 @@ static Seaport *sharedInstance;
         self.operationQueue=[[NSOperationQueue alloc]init];
         [self.operationQueue setMaxConcurrentOperationCount:1];
         NSString * serverAddress =[NSString stringWithFormat:@"%@:%@",host,port];
-        self.http = [[SeaportHttp alloc]initWithDomain:serverAddress];
+        
+        NSOperationQueue *httpQueue = [[NSOperationQueue alloc]init];
+        [httpQueue setMaxConcurrentOperationCount:3];
+        self.http = [[SeaportHttp alloc]initWithDomain:serverAddress operationQueue:httpQueue];
     }
     return self;
 }

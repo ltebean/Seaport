@@ -28,8 +28,8 @@
     self.bridge = [SeaportWebViewBridge bridgeForWebView:self.webView param:@{@"city":@"shanghai",@"name": @"ltebean"} dataHandler:^(id data) {
         NSLog(@"receive data: %@",data);
     }];
-    
 }
+
 
 -(void) viewWillAppear:(BOOL)animated  {
     [self refresh:nil];

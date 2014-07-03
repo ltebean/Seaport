@@ -16,16 +16,24 @@
 @implementation SeaportHttp
 
 
-
 - (id) initWithDomain:(NSString*) domain
 {
     if (self = [super init]) {
         self.domain=domain;
-        self.operationQueue=[[NSOperationQueue alloc]init];
-        [self.operationQueue setMaxConcurrentOperationCount:3];
+        self.operationQueue=[NSOperationQueue mainQueue];
     }
     return self;
 }
+
+- (id) initWithDomain:(NSString*) domain operationQueue:(NSOperationQueue*) operationQueue
+{
+    if (self = [super init]) {
+        self.domain=domain;
+        self.operationQueue=operationQueue;
+    }
+    return self;
+}
+
 
 -(void)sendRequestToPath:(NSString*)path method:(NSString*)method params:(NSDictionary*)params cookies:(NSDictionary*)cookies completionHandler:(void (^)(id)) completionHandler
 {

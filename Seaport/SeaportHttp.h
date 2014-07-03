@@ -10,6 +10,9 @@
 
 - (id) initWithDomain:(NSString*) domain;
 
+- (id) initWithDomain:(NSString*) domain operationQueue:(NSOperationQueue*) operationQueue;
+
+
 -(void)sendRequestToPath:(NSString*)path method:(NSString*)method params:(NSDictionary*)params cookies:(NSDictionary*)cookies  completionHandler:(void (^)(id)) completionHandler ;
 
 -(void)postJsonToPath:(NSString*)path body:(id)object cookies:(NSDictionary*)cookies  completionHandler:(void (^)(id)) completionHandler;
