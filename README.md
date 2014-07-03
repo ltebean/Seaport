@@ -18,7 +18,7 @@ After finished, create a database and import all the views and examples by repli
 ####2. Intergrate Seaport in Your App
 First init a Seaport client by specifing the appName, couchdb address, and  database name:
 
-```oc
+```objective-c
 Seaport *seaport = [[Seaport alloc]initWithAppName:@"TestApp"
                                       	serverHost:@"223.4.15.141"
                                       	sevrerPort:@"9984"
@@ -27,13 +27,13 @@ Seaport *seaport = [[Seaport alloc]initWithAppName:@"TestApp"
 
 Check whether there are some updates, usually it should be called when app starts:
 
-```oc
+```objective-c
 [seaport checkUpdate];
 ```
 
 Then you could ask Seaport where is your package's root path, then load static resources from that path:
 
-```oc
+```objective-c
 NSString *rootPath = [seaport packagePath:@"helloworld"];
 if(rootPath){
     NSString *filePath = [rootPath stringByAppendingPathComponent:@"index.html"];
@@ -44,13 +44,13 @@ if(rootPath){
 	
 If you are interested in the life cycle of package management, you could implement Seaport protocal and set the delegate to self:
 
-```oc
+```objective-c
 seaport.delegate = self;
 ```
 
 Seaport protocal:
 
-```
+```objective-c
 -(void)seaport:(Seaport*)seaport didStartDownloadPackage:(NSString*) packageName version:(NSString*) version;
 	
 -(void)seaport:(Seaport*)seaport didFinishDownloadPackage:(NSString*) packageName version:(NSString*) version;
