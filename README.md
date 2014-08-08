@@ -46,7 +46,7 @@ seaport activate -a TestApp -p index -v 1.1.0
 
 
 ####5. Intergrate Seaport in Your App
-On ios side, first init a Seaport client by specifing the appName, package cloud address, and database name:
+On ios side, first init a Seaport client by specifing the appName and the address of package cloud:
 
 ```objective-c
 Seaport *seaport = [[Seaport alloc]initWithAppName:@"TestApp"
