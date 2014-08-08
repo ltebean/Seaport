@@ -22,15 +22,15 @@ npm install -g seaport-client
 
 ####2. Register an Account
 
-Run `seartport adduser`, specify your username and password:
+Run `seaport adduser`, specify your username and password:
 
 ```
-searport adduser -u ltebean -s test
+seaport adduser -u ltebean -s test
 ```
 
 ####3. Publish a Package
 
-Run `seartport publish`, specify the appName, packageName, and current version, the current working directory will be packed into a zip and published to the package cloud:
+Run `seaport publish`, specify the appName, packageName, and current version, the current working directory will be packed into a zip and published to the package cloud:
 
 ```
 seaport publish -a TestApp -p index -v 1.0.0
