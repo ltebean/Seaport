@@ -10,19 +10,49 @@ Seaport makes it easy to ship static resources to ios client. You just need to a
 
 ##Getting Started
 
-####1. Install CouchDB
-Seaport uses couchdb as its backend, so you must install couchdb first. 
+Seaport provides a default [package cloud](http://223.4.15.141:9984/seaport), and with [seaport-client](https://www.npmjs.org/package/seaport-client) you can easily manage your packages.
 
-After finished, create a database and import all the views and examples by replicating from "http://223.4.15.141:9984/seaport"
+####1. Install seaport-client
 
-####2. Intergrate Seaport in Your App
-First init a Seaport client by specifing the appName, couchdb address, and  database name:
+Node.js environment is required, then install seaport-client by:
+
+```
+npm install -g seaport-client
+```
+
+####2. Register an Account
+
+Run `seartport adduser`, specify your username and password:
+
+```
+searport adduser -u ltebean -s test
+```
+
+####3. Publish a Package
+
+Run `seartport publish`, specify the appName, packageName, and current version, the current working directory will be packed into a zip and published to the package cloud:
+
+```
+seaport publish -a TestApp -p index -v 1.0.0
+```
+
+####4. Activate a specific version
+
+For example, activate version 1.1.0 of package 'index' with appName 'TestApp':
+```
+seaport activate -a TestApp -p index -v 1.1.0
+
+```
+
+
+####5. Intergrate Seaport in Your App
+On ios side, first init a Seaport client by specifing the appName, package cloud address, and database name:
 
 ```objective-c
 Seaport *seaport = [[Seaport alloc]initWithAppName:@"TestApp"
-                                      	serverHost:@"223.4.15.141"
-                                      	sevrerPort:@"9984"
-                                          	dbName:@"seaport"];
+                                        serverHost:@"223.4.15.141"
+                                        sevrerPort:@"9984"
+                                            dbName:@"seaport"];
 ```
 
 Check whether there are some updates, usually it should be called when app starts:
@@ -34,15 +64,15 @@ Check whether there are some updates, usually it should be called when app start
 Then you could ask Seaport where is your package's root path, then load static resources from that path:
 
 ```objective-c
-NSString *rootPath = [seaport packagePath:@"helloworld"];
+NSString *rootPath = [seaport packagePath:@"index"];
 if(rootPath){
     NSString *filePath = [rootPath stringByAppendingPathComponent:@"index.html"];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL fileURLWithPath:filePath]];
     [self.webView loadRequest:request];
 }
 ```
-	
-If you are interested in the life cycle of package management, you could implement Seaport protocal and set the delegate to self:
+  
+If you are interested in the life cycle of package management, you could implement Seaport protocal:
 
 ```objective-c
 seaport.delegate = self;
@@ -52,20 +82,18 @@ Seaport protocal:
 
 ```objective-c
 -(void)seaport:(Seaport*)seaport didStartDownloadPackage:(NSString*) packageName version:(NSString*) version;
-	
+  
 -(void)seaport:(Seaport*)seaport didFinishDownloadPackage:(NSString*) packageName version:(NSString*) version;
-	
+  
 -(void)seaport:(Seaport*)seaport didFailDownloadPackage:(NSString*) packageName version:(NSString*) version withError:(NSError*) error;
-	
--(void)seaport:(Seaport*)seaport didFinishUpdatePackage:(NSString*) packageName version:(NSString*) version;	
+  
+-(void)seaport:(Seaport*)seaport didFinishUpdatePackage:(NSString*) packageName version:(NSString*) version;  
 ```
 
-####3. Deliver a new package
+## Setup your own package cloud
 
-When you need to deliver a new package to app, All the operation is made on couchdb side.
+Seaport uses couchdb as its backend, so you must install couchdb first. 
 
-* First upload the zip file as attachment in the package doc, the name of  the zip file is by convention "packageName-version".
-* Then change the activeVersion to the version you want.
-* When the next time [seaport checkupdate] gets called, the new package will be delivered to the app.
+After finished, create a database and import all the views and examples by replicating from "http://223.4.15.141:9984/seaport"
 
-Alternatively, you could use [seaport client tool](https://www.npmjs.org/package/seaport-client) to do all the jobs. 
+Finally change the host, port, dbname config to the correspoding value in your code.
