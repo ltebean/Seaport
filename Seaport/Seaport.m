@@ -14,6 +14,7 @@
 #define ERROR_DOMAIN @"io.seaport"
 
 #define fm [NSFileManager defaultManager]
+#define rootDirectory @"seaport"
 
 typedef enum {
     DownloadZipError = -1000,
@@ -23,7 +24,7 @@ typedef enum {
 @interface Seaport ()
 @property(nonatomic,copy) NSString* appName;
 @property(nonatomic,copy) NSString* dbName;
-@property(nonatomic,strong) NSString* packageDirectory;
+@property(nonatomic,strong) NSString* appDirectory;
 @property(nonatomic,strong) SeaportHttp* http;
 @property(nonatomic,strong) NSOperationQueue* operationQueue;
 @end
@@ -46,7 +47,7 @@ static Seaport *sharedInstance;
     if (self = [super init]) {
         self.appName=appName;
         self.dbName=dbName;
-        self.packageDirectory= [self createPackageFolderWithAppName:self.appName];
+        self.appDirectory= [self createAppFolderWithAppName:self.appName];
         if(![self loadConfig]){
             [self saveConfig:@{@"packages":@{}}];
         }
@@ -61,18 +62,21 @@ static Seaport *sharedInstance;
     return self;
 }
 
--(NSString *) createPackageFolderWithAppName:(NSString*) appName
+-(NSString *) createAppFolderWithAppName:(NSString*) appName
 {
     NSURL *documentsDirectoryURL = [fm URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
-    NSString * packageDirectory = [documentsDirectoryURL URLByAppendingPathComponent:appName].path;
     
-    NSLog(@"%@",packageDirectory);
+    NSURL * seaportDirectory = [documentsDirectoryURL URLByAppendingPathComponent:rootDirectory];
+    NSString * appDirectory = [seaportDirectory URLByAppendingPathComponent:appName].path;
     
-    BOOL exists=[fm fileExistsAtPath:packageDirectory];
+    NSLog(@"%@",appDirectory);
+    
+    BOOL exists=[fm fileExistsAtPath:appDirectory];
     if (!exists) {
-        [fm createDirectoryAtPath:packageDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+        [fm removeItemAtPath:seaportDirectory.path error:nil];
+        [fm createDirectoryAtPath:appDirectory withIntermediateDirectories:YES attributes:nil error:nil];
     }
-    return packageDirectory;
+    return appDirectory;
 }
 
 -(void)checkUpdate
@@ -183,7 +187,7 @@ static Seaport *sharedInstance;
 
 -(NSString*) packagePathWithName:(NSString*) packageName version:(NSString*)version
 {
-    NSString * packageRootPath = [self.packageDirectory stringByAppendingPathComponent:packageName];
+    NSString * packageRootPath = [self.appDirectory stringByAppendingPathComponent:packageName];
     if(![fm fileExistsAtPath:packageName]){
         [fm createDirectoryAtPath:packageRootPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
@@ -192,7 +196,7 @@ static Seaport *sharedInstance;
 
 -(NSMutableDictionary*) loadConfig
 {
-    NSString *configFilePath =[self.packageDirectory stringByAppendingPathComponent:CONFIG_FILE];
+    NSString *configFilePath =[self.appDirectory stringByAppendingPathComponent:CONFIG_FILE];
     NSMutableDictionary *config = [[NSMutableDictionary alloc] initWithContentsOfFile:configFilePath];
     return config;
 }
@@ -200,7 +204,7 @@ static Seaport *sharedInstance;
 -(BOOL) saveConfig:(NSDictionary*) config
 {
     NSLog(@"update config to %@",config);
-    NSString *configFilePath =[self.packageDirectory stringByAppendingPathComponent:CONFIG_FILE];
+    NSString *configFilePath =[self.appDirectory stringByAppendingPathComponent:CONFIG_FILE];
     return [config writeToFile:configFilePath atomically:YES];
 }
 
