@@ -33,7 +33,7 @@ typedef enum {
 
 static Seaport *sharedInstance;
 
-+(Seaport *)sharedInstance{
++ (Seaport *)sharedInstance{
     @synchronized(self)
     {
         if (!sharedInstance){
@@ -43,7 +43,7 @@ static Seaport *sharedInstance;
     }
 }
 
-- (id) initWithAppName:(NSString*) appName serverHost:(NSString*) host sevrerPort:(NSString*) port dbName:(NSString*) dbName;{
+- (id)initWithAppName:(NSString*) appName serverHost:(NSString*) host sevrerPort:(NSString*) port dbName:(NSString*) dbName;{
     if (self = [super init]) {
         self.appName=appName;
         self.dbName=dbName;
@@ -62,7 +62,7 @@ static Seaport *sharedInstance;
     return self;
 }
 
--(NSString *) createAppFolderWithAppName:(NSString*) appName
+- (NSString *)createAppFolderWithAppName:(NSString*) appName
 {
     NSURL *documentsDirectoryURL = [fm URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
     
@@ -79,13 +79,13 @@ static Seaport *sharedInstance;
     return appDirectory;
 }
 
--(void)checkUpdate
+- (void)checkUpdate
 {
     [self updateLocal];
     [self updateRemote];
 }
 
--(void) updateLocal
+- (void)updateLocal
 {
     @synchronized(self) {
         NSMutableDictionary * config=[self loadConfig];
@@ -107,7 +107,7 @@ static Seaport *sharedInstance;
     }
 }
 
--(void) updateRemote
+- (void)updateRemote
 {
     NSString *path = [NSString stringWithFormat:@"/%@/_design/app/_view/byApp",self.dbName];
     [self.http sendRequestToPath:path method:@"GET" params:@{@"key":[NSString stringWithFormat:@"\"%@\"",self.appName]} cookies:nil completionHandler:^(NSDictionary* result) {
@@ -123,13 +123,13 @@ static Seaport *sharedInstance;
     }];
 }
 
--(BOOL)removeLocalPackage:(NSString*) packageName version:(NSString*) version
+- (BOOL)removeLocalPackage:(NSString*) packageName version:(NSString*) version
 {
     NSString *path = [self packagePathWithName:packageName version:version];
     return [fm removeItemAtPath:path error:nil];
 }
 
--(void) updatePackage:(NSDictionary*) package toVersion:(NSString*) version
+- (void)updatePackage:(NSDictionary*) package toVersion:(NSString*) version
 {
     NSString *packageName = package[@"name"];
     NSString *destinationPath = [self packagePathWithName:packageName version:version];
@@ -185,7 +185,7 @@ static Seaport *sharedInstance;
     }];
 }
 
--(NSString*) packagePathWithName:(NSString*) packageName version:(NSString*)version
+- (NSString*)packagePathWithName:(NSString*) packageName version:(NSString*)version
 {
     NSString * packageRootPath = [self.appDirectory stringByAppendingPathComponent:packageName];
     if(![fm fileExistsAtPath:packageName]){
@@ -194,21 +194,21 @@ static Seaport *sharedInstance;
     return [packageRootPath stringByAppendingPathComponent:version];
 }
 
--(NSMutableDictionary*) loadConfig
+- (NSMutableDictionary*)loadConfig
 {
     NSString *configFilePath =[self.appDirectory stringByAppendingPathComponent:CONFIG_FILE];
     NSMutableDictionary *config = [[NSMutableDictionary alloc] initWithContentsOfFile:configFilePath];
     return config;
 }
 
--(BOOL) saveConfig:(NSDictionary*) config
+- (BOOL)saveConfig:(NSDictionary*) config
 {
     NSLog(@"update config to %@",config);
     NSString *configFilePath =[self.appDirectory stringByAppendingPathComponent:CONFIG_FILE];
     return [config writeToFile:configFilePath atomically:YES];
 }
 
-- (NSString*) packagePath:(NSString*) packageName;
+- (NSString*)packagePath:(NSString*) packageName;
 {
     NSDictionary* package;
     @synchronized(self){
