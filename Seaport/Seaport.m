@@ -19,59 +19,47 @@
 typedef enum {
     DownloadZipError = -1000,
     UnZipError,
-}Error;
+} Error;
 
-@interface Seaport ()
-@property(nonatomic,copy) NSString* appName;
-@property(nonatomic,copy) NSString* dbName;
-@property(nonatomic,strong) NSString* appDirectory;
-@property(nonatomic,strong) SeaportHttp* http;
-@property(nonatomic,strong) NSOperationQueue* operationQueue;
+@interface Seaport()
+@property (nonatomic, copy) NSString *appName;
+@property (nonatomic, copy) NSString *dbName;
+@property (nonatomic, copy) NSString *appDirectory;
+@property (nonatomic, strong) SeaportHttp *http;
+@property (nonatomic, strong) NSOperationQueue *operationQueue;
 @end
 
 @implementation Seaport
 
-static Seaport *sharedInstance;
-
-+ (Seaport *)sharedInstance{
-    @synchronized(self)
-    {
-        if (!sharedInstance){
-            sharedInstance = [[Seaport alloc] initWithAppName:APP_NAME serverHost:SERVER_HOST sevrerPort:SERVER_PORT dbName:DB_NAME];
-        }
-        return sharedInstance;
-    }
-}
-
-- (id)initWithAppName:(NSString*) appName serverHost:(NSString*) host sevrerPort:(NSString*) port dbName:(NSString*) dbName;{
+- (id)initWithAppName:(NSString *)appName serverHost:(NSString *)host sevrerPort:(NSString *)port dbName:(NSString *)dbName {
     if (self = [super init]) {
-        self.appName=appName;
-        self.dbName=dbName;
-        self.appDirectory= [self createAppFolderWithAppName:self.appName];
-        if(![self loadConfig]){
+        self.appName = appName;
+        self.dbName = dbName;
+        self.appDirectory = [self createAppFolderWithAppName:self.appName];
+        if (![self loadConfig]) {
             [self saveConfig:@{@"packages":@{}}];
         }
-        self.operationQueue=[[NSOperationQueue alloc]init];
+        self.operationQueue = [[NSOperationQueue alloc] init];
         [self.operationQueue setMaxConcurrentOperationCount:1];
-        NSString * serverAddress =[NSString stringWithFormat:@"%@:%@",host,port];
+        NSString *serverAddress = [NSString stringWithFormat:@"%@:%@", host, port];
         
-        NSOperationQueue *httpQueue = [[NSOperationQueue alloc]init];
+        NSOperationQueue *httpQueue = [[NSOperationQueue alloc] init];
         [httpQueue setMaxConcurrentOperationCount:3];
-        self.http = [[SeaportHttp alloc]initWithDomain:serverAddress operationQueue:httpQueue];
+        self.http = [[SeaportHttp alloc] initWithDomain:serverAddress operationQueue:httpQueue];
     }
     return self;
 }
 
-- (NSString *)createAppFolderWithAppName:(NSString*) appName
+- (NSString *)createAppFolderWithAppName:(NSString *)appName
 {
     NSURL *documentsDirectoryURL = [fm URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
     
-    NSURL * seaportDirectory = [documentsDirectoryURL URLByAppendingPathComponent:rootDirectory];
-    NSString * appDirectory = [seaportDirectory URLByAppendingPathComponent:appName].path;
+    NSURL *seaportDirectory = [documentsDirectoryURL URLByAppendingPathComponent:rootDirectory];
+    NSString *appDirectory = [seaportDirectory URLByAppendingPathComponent:appName].path;
     
-    NSLog(@"%@",appDirectory);
+//    NSLog(@"%@",appDirectory);
     
-    BOOL exists=[fm fileExistsAtPath:appDirectory];
+    BOOL exists= [fm fileExistsAtPath:appDirectory];
     if (!exists) {
         [fm removeItemAtPath:seaportDirectory.path error:nil];
         [fm createDirectoryAtPath:appDirectory withIntermediateDirectories:YES attributes:nil error:nil];
@@ -88,14 +76,14 @@ static Seaport *sharedInstance;
 - (void)updateLocal
 {
     @synchronized(self) {
-        NSMutableDictionary * config=[self loadConfig];
-        NSMutableDictionary * packages = config[@"packages"];
-        for(NSString* packageName in [packages allKeys]){
+        NSMutableDictionary *config=[self loadConfig];
+        NSMutableDictionary *packages = config[@"packages"];
+        for(NSString *packageName in [packages allKeys]){
             NSMutableDictionary* package = packages[packageName];
             if(![package[@"current"] isEqualToString: package[@"available"]]){
                 [self removeLocalPackage:packageName version:package[@"current"]];
-                NSString* oldVersion=[package[@"current"] copy];
-                package[@"current"]=package[@"available"];
+                NSString *oldVersion = [package[@"current"] copy];
+                package[@"current"] = package[@"available"];
                 [self saveConfig:config];
                 // remove the old one asynchronously
                 [self.operationQueue addOperationWithBlock:^{
@@ -111,11 +99,11 @@ static Seaport *sharedInstance;
 {
     NSString *path = [NSString stringWithFormat:@"/%@/_design/app/_view/byApp",self.dbName];
     [self.http sendRequestToPath:path method:@"GET" params:@{@"key":[NSString stringWithFormat:@"\"%@\"",self.appName]} cookies:nil completionHandler:^(NSDictionary* result) {
-        NSDictionary* localPackages = [self loadConfig][@"packages"];
-        for(NSDictionary* row in result[@"rows"]){
-            NSDictionary* package=row[@"value"];
+        NSDictionary *localPackages = [self loadConfig][@"packages"];
+        for(NSDictionary *row in result[@"rows"]){
+            NSDictionary *package=row[@"value"];
             NSString *packageName = package[@"name"];
-            NSDictionary* localPackage=localPackages[packageName];
+            NSDictionary *localPackage=localPackages[packageName];
             if(!localPackage || ![localPackage[@"available"] isEqualToString:package[@"activeVersion"]]){
                 [self updatePackage:package toVersion:package[@"activeVersion"]];
             }
@@ -164,60 +152,60 @@ static Seaport *sharedInstance;
         [self.deletage seaport:self didFinishDownloadPackage:packageName version:version];
         
         // update config
-        BOOL localUpdated=NO;
+        BOOL localUpdated = NO;
         @synchronized(self) {
-            NSMutableDictionary * config=[self loadConfig];
-            NSMutableDictionary * packages = config[@"packages"];
-            NSMutableDictionary * package = packages[packageName];
-            if(!package){
-                package=[[NSMutableDictionary alloc]init];
-                packages[packageName]=package;
-                package[@"current"]=version;
-                localUpdated=YES;
+            NSMutableDictionary *config = [self loadConfig];
+            NSMutableDictionary *packages = config[@"packages"];
+            NSMutableDictionary *package = packages[packageName];
+            if (!package) {
+                package = [[NSMutableDictionary alloc]init];
+                packages[packageName] = package;
+                package[@"current"] = version;
+                localUpdated = YES;
             }
-            package[@"available"]=version;
-            package[@"time"]=[NSDate date];
+            package[@"available"] = version;
+            package[@"time"] = [NSDate date];
             [self saveConfig:config];
         }
-        if(localUpdated){
+        if (localUpdated) {
             [self.deletage seaport:self didFinishUpdatePackage:packageName version:version];
         }
     }];
 }
 
-- (NSString*)packagePathWithName:(NSString*) packageName version:(NSString*)version
+- (NSString *)packagePathWithName:(NSString *)packageName version:(NSString *)version
 {
-    NSString * packageRootPath = [self.appDirectory stringByAppendingPathComponent:packageName];
+    NSString *packageRootPath = [self.appDirectory stringByAppendingPathComponent:packageName];
     if(![fm fileExistsAtPath:packageName]){
         [fm createDirectoryAtPath:packageRootPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     return [packageRootPath stringByAppendingPathComponent:version];
 }
 
-- (NSMutableDictionary*)loadConfig
+- (NSMutableDictionary *)loadConfig
 {
     NSString *configFilePath =[self.appDirectory stringByAppendingPathComponent:CONFIG_FILE];
     NSMutableDictionary *config = [[NSMutableDictionary alloc] initWithContentsOfFile:configFilePath];
     return config;
 }
 
-- (BOOL)saveConfig:(NSDictionary*) config
+- (BOOL)saveConfig:(NSDictionary*)config
 {
-    NSLog(@"update config to %@",config);
+//    NSLog(@"update config to %@",config);
     NSString *configFilePath =[self.appDirectory stringByAppendingPathComponent:CONFIG_FILE];
     return [config writeToFile:configFilePath atomically:YES];
 }
 
-- (NSString*)packagePath:(NSString*) packageName;
+- (NSString *)packagePath:(NSString *)packageName;
 {
     NSDictionary* package;
     @synchronized(self){
         package =[self loadConfig][@"packages"][packageName];
     }
-    if(!package){
+    if (!package) {
         return nil;
     }
-    NSString* path=[self packagePathWithName:packageName version:package[@"current"]];
+    NSString *path=[self packagePathWithName:packageName version:package[@"current"]];
     
     if(![fm fileExistsAtPath:path]){
         return nil;

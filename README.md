@@ -49,10 +49,10 @@ seaport activate -a TestApp -p index -v 1.1.0
 On ios side, first init a Seaport client by specifing the appName and the address of package cloud:
 
 ```objective-c
-Seaport *seaport = [[Seaport alloc]initWithAppName:@"TestApp"
-                                        serverHost:@"223.4.15.141"
-                                        sevrerPort:@"9984"
-                                            dbName:@"seaport"];
+Seaport *seaport = [[Seaport alloc] initWithAppName:@"TestApp"
+                                         serverHost:@"223.4.15.141"
+                                         sevrerPort:@"9984"
+                                             dbName:@"seaport"];
 ```
 
 Check whether there are some updates, usually it should be called when app starts:
@@ -65,7 +65,7 @@ Then you could ask Seaport where is your package's root path, then load static r
 
 ```objective-c
 NSString *rootPath = [seaport packagePath:@"index"];
-if(rootPath){
+if (rootPath) {
     NSString *filePath = [rootPath stringByAppendingPathComponent:@"index.html"];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL fileURLWithPath:filePath]];
     [self.webView loadRequest:request];
@@ -81,13 +81,13 @@ seaport.delegate = self;
 Seaport protocal:
 
 ```objective-c
--(void)seaport:(Seaport*)seaport didStartDownloadPackage:(NSString*) packageName version:(NSString*) version;
+- (void)seaport:(Seaport *)seaport didStartDownloadPackage:(NSString *)packageName version:(NSString *)version;
   
--(void)seaport:(Seaport*)seaport didFinishDownloadPackage:(NSString*) packageName version:(NSString*) version;
+- (void)seaport:(Seaport *)seaport didFinishDownloadPackage:(NSString *)packageName version:(NSString *)version;
   
--(void)seaport:(Seaport*)seaport didFailDownloadPackage:(NSString*) packageName version:(NSString*) version withError:(NSError*) error;
+- (void)seaport:(Seaport *)seaport didFailDownloadPackage:(NSString *)packageName version:(NSString *)version withError:(NSError *)error;
   
--(void)seaport:(Seaport*)seaport didFinishUpdatePackage:(NSString*) packageName version:(NSString*) version;  
+- (void)seaport:(Seaport *)seaport didFinishUpdatePackage:(NSString *)packageName version:(NSString *)version;  
 ```
 
 ## Setup your own package cloud

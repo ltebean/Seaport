@@ -8,11 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#define APP_NAME @"emma"
-#define SERVER_HOST @"223.4.15.141"
-#define SERVER_PORT @"9984"
-#define DB_NAME @"seaport"
-
 @class Seaport;
 @protocol SeaportDelegate<NSObject>
 - (void)seaport:(Seaport *)seaport didStartDownloadPackage:(NSString *)packageName version:(NSString *)version;
@@ -24,8 +19,7 @@
 
 @interface Seaport : NSObject
 @property(nonatomic,weak) id<SeaportDelegate> deletage;
-+ (Seaport *)sharedInstance;
-- (id) initWithAppName:(NSString *)appName serverHost:(NSString *)host sevrerPort:(NSString *)port dbName:(NSString *)dbName;
+- (id)initWithAppName:(NSString *)appName serverHost:(NSString *)host sevrerPort:(NSString *)port dbName:(NSString *)dbName;
 - (void)checkUpdate;
 - (NSString *)packagePath:(NSString *)packageName;
 @end

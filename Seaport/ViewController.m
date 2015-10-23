@@ -11,6 +11,12 @@
 #import "SeaportHttp.h"
 #import "SeaportWebViewBridge.h"
 
+
+#define APP_NAME @"emma"
+#define SERVER_HOST @"223.4.15.141"
+#define SERVER_PORT @"9984"
+#define DB_NAME @"seaport"
+
 @interface ViewController  () <UIWebViewDelegate,SeaportDelegate>
 @property (nonatomic,strong) Seaport *seaport ;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
@@ -22,7 +28,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.seaport = [Seaport sharedInstance];
+    self.seaport = [[Seaport alloc] initWithAppName:APP_NAME serverHost:SERVER_HOST sevrerPort:SERVER_PORT dbName:DB_NAME];
     self.seaport.deletage=self;
     self.bridge = [SeaportWebViewBridge bridgeForWebView:self.webView param:@{@"city":@"shanghai",@"name": @"ltebean"} dataHandler:^(id data) {
         NSLog(@"receive data: %@",data);
