@@ -13,8 +13,8 @@
 #define CONFIG_FILE @"config.plist"
 #define ERROR_DOMAIN @"io.seaport"
 
-#define fm [NSFileManager defaultManager]
-#define rootDirectory @"seaport"
+#define FM [NSFileManager defaultManager]
+#define ROOT_DIRECTORY @"seaport"
 
 typedef enum {
     DownloadZipError = -1000,
@@ -43,26 +43,24 @@ typedef enum {
         [self.operationQueue setMaxConcurrentOperationCount:1];
         NSString *serverAddress = [NSString stringWithFormat:@"%@:%@", host, port];
         
-        NSOperationQueue *httpQueue = [[NSOperationQueue alloc] init];
-        [httpQueue setMaxConcurrentOperationCount:3];
-        self.http = [[SeaportHttp alloc] initWithDomain:serverAddress operationQueue:httpQueue];
+        self.http = [[SeaportHttp alloc] initWithDomain:serverAddress operationQueue:self.operationQueue];
     }
     return self;
 }
 
 - (NSString *)createAppFolderWithAppName:(NSString *)appName
 {
-    NSURL *documentsDirectoryURL = [fm URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+    NSURL *documentsDirectoryURL = [FM URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
     
-    NSURL *seaportDirectory = [documentsDirectoryURL URLByAppendingPathComponent:rootDirectory];
+    NSURL *seaportDirectory = [documentsDirectoryURL URLByAppendingPathComponent:ROOT_DIRECTORY];
     NSString *appDirectory = [seaportDirectory URLByAppendingPathComponent:appName].path;
     
 //    NSLog(@"%@",appDirectory);
     
-    BOOL exists= [fm fileExistsAtPath:appDirectory];
+    BOOL exists= [FM fileExistsAtPath:appDirectory];
     if (!exists) {
-        [fm removeItemAtPath:seaportDirectory.path error:nil];
-        [fm createDirectoryAtPath:appDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+        [FM removeItemAtPath:seaportDirectory.path error:nil];
+        [FM createDirectoryAtPath:appDirectory withIntermediateDirectories:YES attributes:nil error:nil];
     }
     return appDirectory;
 }
@@ -78,9 +76,9 @@ typedef enum {
     @synchronized(self) {
         NSMutableDictionary *config=[self loadConfig];
         NSMutableDictionary *packages = config[@"packages"];
-        for(NSString *packageName in [packages allKeys]){
-            NSMutableDictionary* package = packages[packageName];
-            if(![package[@"current"] isEqualToString: package[@"available"]]){
+        for (NSString *packageName in [packages allKeys]) {
+            NSMutableDictionary *package = packages[packageName];
+            if (![package[@"current"] isEqualToString: package[@"available"]]) {
                 [self removeLocalPackage:packageName version:package[@"current"]];
                 NSString *oldVersion = [package[@"current"] copy];
                 package[@"current"] = package[@"available"];
@@ -98,18 +96,17 @@ typedef enum {
 - (void)updateRemote
 {
     NSString *path = [NSString stringWithFormat:@"/%@/_design/app/_view/byApp",self.dbName];
-    [self.http sendRequestToPath:path method:@"GET" params:@{@"key":[NSString stringWithFormat:@"\"%@\"",self.appName]} cookies:nil completionHandler:^(NSDictionary* result) {
+    [self.http sendRequestToPath:path method:@"GET" params:@{@"key":[NSString stringWithFormat:@"\"%@\"",self.appName]} cookies:nil completionHandler:^(NSDictionary *result) {
         NSDictionary *localPackages = [self loadConfig][@"packages"];
-        for(NSDictionary *row in result[@"rows"]){
-            NSDictionary *package=row[@"value"];
+        for (NSDictionary *row in result[@"rows"]) {
+            NSDictionary *package = row[@"value"];
             NSString *packageName = package[@"packageName"];
-            NSDictionary *localPackage=localPackages[packageName];
-            
+            NSDictionary *localPackage = localPackages[packageName];
             if (!package[@"activeVersion"]) {
                 continue;
             }
             BOOL localEqualToRemote = [localPackage[@"available"] isEqualToString:package[@"activeVersion"]];
-            if(!localPackage || !localEqualToRemote){
+            if (!localPackage || !localEqualToRemote) {
                 [self updatePackage:package toVersion:package[@"activeVersion"]];
             }
         }
@@ -119,7 +116,7 @@ typedef enum {
 - (BOOL)removeLocalPackage:(NSString *)packageName version:(NSString *)version
 {
     NSString *path = [self packagePathWithName:packageName version:version];
-    return [fm removeItemAtPath:path error:nil];
+    return [FM removeItemAtPath:path error:nil];
 }
 
 - (void)updatePackage:(NSDictionary *)package toVersion:(NSString *)version
@@ -128,7 +125,7 @@ typedef enum {
     NSString *destinationPath = [self packagePathWithName:packageName version:version];
     NSString *zipPath = [destinationPath stringByAppendingString:@".zip"];
     
-    if([fm fileExistsAtPath:destinationPath]){
+    if ([FM fileExistsAtPath:destinationPath]) {
         return;
     }
     
@@ -136,23 +133,26 @@ typedef enum {
     
     NSString *path = [NSString stringWithFormat:@"/%@/%@",self.dbName,package[@"zip"]];
     [self.http downloadFileAtPath:path params:nil cookies:nil completionHandler:^(NSData *data) {
-        if(!data){
+        if ([NSThread isMainThread]) {
+            NSLog(@"%@", @"hahahahahha");
+        }
+        if (!data) {
             [self.deletage seaport:self didFailDownloadPackage:packageName version:version withError:[NSError errorWithDomain:ERROR_DOMAIN code:DownloadZipError userInfo:nil]];
             return;
         }
         // write data to zip
-        if(![data writeToFile:zipPath atomically:YES]){
+        if (![data writeToFile:zipPath atomically:YES]) {
             [self.deletage seaport:self didFailDownloadPackage:packageName version:version withError:[NSError errorWithDomain:ERROR_DOMAIN code:DownloadZipError userInfo:nil]];
             return;
         }
         
         //unzip
-        if(![SSZipArchive unzipFileAtPath:zipPath toDestination:destinationPath]){
-            [fm removeItemAtPath:zipPath error:nil];
+        if (![SSZipArchive unzipFileAtPath:zipPath toDestination:destinationPath]) {
+            [FM removeItemAtPath:zipPath error:nil];
             [self.deletage seaport:self didFailDownloadPackage:packageName version:version withError:[NSError errorWithDomain:ERROR_DOMAIN code:UnZipError userInfo:nil]];
             return;
         }
-        [fm removeItemAtPath:zipPath error:nil];
+        [FM removeItemAtPath:zipPath error:nil];
         
         [self.deletage seaport:self didFinishDownloadPackage:packageName version:version];
         
@@ -181,38 +181,38 @@ typedef enum {
 - (NSString *)packagePathWithName:(NSString *)packageName version:(NSString *)version
 {
     NSString *packageRootPath = [self.appDirectory stringByAppendingPathComponent:packageName];
-    if(![fm fileExistsAtPath:packageName]){
-        [fm createDirectoryAtPath:packageRootPath withIntermediateDirectories:YES attributes:nil error:nil];
+    if(![FM fileExistsAtPath:packageName]) {
+        [FM createDirectoryAtPath:packageRootPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     return [packageRootPath stringByAppendingPathComponent:version];
 }
 
 - (NSMutableDictionary *)loadConfig
 {
-    NSString *configFilePath =[self.appDirectory stringByAppendingPathComponent:CONFIG_FILE];
+    NSString *configFilePath = [self.appDirectory stringByAppendingPathComponent:CONFIG_FILE];
     NSMutableDictionary *config = [[NSMutableDictionary alloc] initWithContentsOfFile:configFilePath];
     return config;
 }
 
-- (BOOL)saveConfig:(NSDictionary*)config
+- (BOOL)saveConfig:(NSDictionary *)config
 {
     NSLog(@"update config to %@",config);
-    NSString *configFilePath =[self.appDirectory stringByAppendingPathComponent:CONFIG_FILE];
+    NSString *configFilePath = [self.appDirectory stringByAppendingPathComponent:CONFIG_FILE];
     return [config writeToFile:configFilePath atomically:YES];
 }
 
 - (NSString *)packagePath:(NSString *)packageName;
 {
     NSDictionary *package;
-    @synchronized(self){
-        package =[self loadConfig][@"packages"][packageName];
+    @synchronized(self) {
+        package = [self loadConfig][@"packages"][packageName];
     }
     if (!package) {
         return nil;
     }
-    NSString *path=[self packagePathWithName:packageName version:package[@"current"]];
+    NSString *path = [self packagePathWithName:packageName version:package[@"current"]];
     
-    if(![fm fileExistsAtPath:path]){
+    if(![FM fileExistsAtPath:path]) {
         return nil;
     }
     return path;
