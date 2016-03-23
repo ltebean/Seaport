@@ -12,9 +12,9 @@
 #import "SeaportWebViewBridge.h"
 
 
-#define APP_NAME @"emma"
-#define SERVER_HOST @"223.4.15.141"
-#define SERVER_PORT @"9984"
+#define APP_NAME @"demo-app"
+#define SERVER_HOST @"106.187.100.229"
+#define SERVER_PORT @"5984"
 #define DB_NAME @"seaport"
 
 @interface ViewController  () <UIWebViewDelegate,SeaportDelegate>
@@ -42,7 +42,7 @@
 
 - (IBAction)refresh:(id)sender {
     
-    NSString *rootPath = [self.seaport packagePath:@"test"];
+    NSString *rootPath = [self.seaport packagePath:@"p1"];
     if(rootPath){
         NSString *filePath = [rootPath stringByAppendingPathComponent:@"index.html"];
         NSURL *localURL=[NSURL fileURLWithPath:filePath];

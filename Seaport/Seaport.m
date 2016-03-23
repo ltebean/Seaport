@@ -102,24 +102,29 @@ typedef enum {
         NSDictionary *localPackages = [self loadConfig][@"packages"];
         for(NSDictionary *row in result[@"rows"]){
             NSDictionary *package=row[@"value"];
-            NSString *packageName = package[@"name"];
+            NSString *packageName = package[@"packageName"];
             NSDictionary *localPackage=localPackages[packageName];
-            if(!localPackage || ![localPackage[@"available"] isEqualToString:package[@"activeVersion"]]){
+            
+            if (!package[@"activeVersion"]) {
+                continue;
+            }
+            BOOL localEqualToRemote = [localPackage[@"available"] isEqualToString:package[@"activeVersion"]];
+            if(!localPackage || !localEqualToRemote){
                 [self updatePackage:package toVersion:package[@"activeVersion"]];
             }
         }
     }];
 }
 
-- (BOOL)removeLocalPackage:(NSString*) packageName version:(NSString*) version
+- (BOOL)removeLocalPackage:(NSString *)packageName version:(NSString *)version
 {
     NSString *path = [self packagePathWithName:packageName version:version];
     return [fm removeItemAtPath:path error:nil];
 }
 
-- (void)updatePackage:(NSDictionary*) package toVersion:(NSString*) version
+- (void)updatePackage:(NSDictionary *)package toVersion:(NSString *)version
 {
-    NSString *packageName = package[@"name"];
+    NSString *packageName = package[@"packageName"];
     NSString *destinationPath = [self packagePathWithName:packageName version:version];
     NSString *zipPath = [destinationPath stringByAppendingString:@".zip"];
     
@@ -130,7 +135,7 @@ typedef enum {
     [self.deletage seaport:self didStartDownloadPackage:packageName version:version];
     
     NSString *path = [NSString stringWithFormat:@"/%@/%@",self.dbName,package[@"zip"]];
-    [self.http downloadFileAtPath:path params:nil cookies:nil completionHandler:^(NSData* data) {
+    [self.http downloadFileAtPath:path params:nil cookies:nil completionHandler:^(NSData *data) {
         if(!data){
             [self.deletage seaport:self didFailDownloadPackage:packageName version:version withError:[NSError errorWithDomain:ERROR_DOMAIN code:DownloadZipError userInfo:nil]];
             return;
@@ -191,14 +196,14 @@ typedef enum {
 
 - (BOOL)saveConfig:(NSDictionary*)config
 {
-//    NSLog(@"update config to %@",config);
+    NSLog(@"update config to %@",config);
     NSString *configFilePath =[self.appDirectory stringByAppendingPathComponent:CONFIG_FILE];
     return [config writeToFile:configFilePath atomically:YES];
 }
 
 - (NSString *)packagePath:(NSString *)packageName;
 {
-    NSDictionary* package;
+    NSDictionary *package;
     @synchronized(self){
         package =[self loadConfig][@"packages"][packageName];
     }

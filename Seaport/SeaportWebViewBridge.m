@@ -11,25 +11,25 @@
 #import "SeaportHttp.h"
 
 @interface SeaportWebViewBridge()
-@property(nonatomic,strong) NSDictionary* param;
-@property(nonatomic,strong) WebViewJavascriptBridge* bridge;
+@property(nonatomic,strong) NSDictionary *param;
+@property(nonatomic,strong) WebViewJavascriptBridge *bridge;
 
 @end
 
 @implementation SeaportWebViewBridge
 
 
-+(SeaportWebViewBridge* ) bridgeForWebView:(UIWebView*) webView param:(NSDictionary*) param dataHandler:(void (^)(id)) handler;
++ (SeaportWebViewBridge *)bridgeForWebView:(UIWebView *)webView param:(NSDictionary *)param dataHandler:(void (^)(id))handler;
 {
-    return [[SeaportWebViewBridge alloc]initWithWebView:webView param:param handler:handler];
+    return [[SeaportWebViewBridge alloc] initWithWebView:webView param:param handler:handler];
 }
 
--(id) initWithWebView:(UIWebView*) webView param:(NSDictionary*) param handler:(void (^)(id)) handler
+- (id)initWithWebView:(UIWebView *)webView param:(NSDictionary *)param handler:(void (^)(id)) handler
 
 {
     if (self = [super init]) {
-        self.param=param;
-        self.bridge=[WebViewJavascriptBridge bridgeForWebView:webView handler:^(id data, WVJBResponseCallback responseCallback) {
+        self.param = param;
+        self.bridge = [WebViewJavascriptBridge bridgeForWebView:webView handler:^(id data, WVJBResponseCallback responseCallback) {
             handler(data);
         }];
         
@@ -75,7 +75,7 @@
     return self;
 }
 
--(void) sendData:(id) data
+- (void)sendData:(id)data
 {
     [self.bridge send:data];
 }
