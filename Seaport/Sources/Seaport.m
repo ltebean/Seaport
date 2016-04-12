@@ -27,6 +27,7 @@ typedef enum {
 @property (nonatomic, copy) NSString *appDirectory;
 @property (nonatomic, strong) SeaportHttp *http;
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
+@property (atomic) BOOL inOperation;
 @end
 
 @implementation Seaport
@@ -55,7 +56,7 @@ typedef enum {
     NSURL *seaportDirectory = [documentsDirectoryURL URLByAppendingPathComponent:ROOT_DIRECTORY];
     NSString *appDirectory = [seaportDirectory URLByAppendingPathComponent:appName].path;
     
-//    NSLog(@"%@",appDirectory);
+    //    NSLog(@"%@",appDirectory);
     
     BOOL exists= [FM fileExistsAtPath:appDirectory];
     if (!exists) {
@@ -131,11 +132,8 @@ typedef enum {
     
     [self.deletage seaport:self didStartDownloadPackage:packageName version:version];
     
-    NSString *path = [NSString stringWithFormat:@"/%@/%@",self.dbName,package[@"zip"]];
+    NSString *path = [NSString stringWithFormat:@"/%@%@",self.dbName, package[@"zip"]];
     [self.http downloadFileAtPath:path params:nil cookies:nil completionHandler:^(NSData *data) {
-        if ([NSThread isMainThread]) {
-            NSLog(@"%@", @"hahahahahha");
-        }
         if (!data) {
             [self.deletage seaport:self didFailDownloadPackage:packageName version:version withError:[NSError errorWithDomain:ERROR_DOMAIN code:DownloadZipError userInfo:nil]];
             return;
@@ -147,7 +145,8 @@ typedef enum {
         }
         
         //unzip
-        if (![SSZipArchive unzipFileAtPath:zipPath toDestination:destinationPath]) {
+        NSError *error;
+        if (![SSZipArchive unzipFileAtPath:zipPath toDestination:destinationPath overwrite:YES password:nil error:&error]) {
             [FM removeItemAtPath:zipPath error:nil];
             [self.deletage seaport:self didFailDownloadPackage:packageName version:version withError:[NSError errorWithDomain:ERROR_DOMAIN code:UnZipError userInfo:nil]];
             return;

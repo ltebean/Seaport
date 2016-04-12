@@ -12,7 +12,7 @@
 #import "SeaportWebViewBridge.h"
 
 
-#define APP_NAME @"demo-app"
+#define APP_NAME @"MLGift"
 #define SERVER_HOST @"http://106.187.100.229"
 #define SERVER_PORT @"5984"
 #define DB_NAME @"seaport"

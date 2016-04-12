@@ -52,7 +52,7 @@
 
 - (void)postJsonToPath:(NSString *)path body:(id)object cookies:(NSDictionary *)cookies  completionHandler:(void (^)(id)) completionHandler
 {
-    NSString *finalUrl = [NSString stringWithFormat:@"http://%@%@",self.domain,path];
+    NSString *finalUrl = [NSString stringWithFormat:@"%@%@",self.domain,path];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:finalUrl]];
     [request setHTTPMethod:@"POST"];
     [self setCookie:cookies forRequest:request];
@@ -72,8 +72,8 @@
 
 - (void)downloadFileAtPath:(NSString *)path params:(NSDictionary *)params cookies:(NSDictionary *)cookies  completionHandler:(void (^)(id))completionHandler
 {
-    NSString *finalUrl=[NSString stringWithFormat:@"http://%@%@",self.domain,path];
-    NSMutableURLRequest *request=[self generateRequestWithURL:finalUrl method:@"GET" params:params cookies:cookies];
+    NSString *finalUrl = [NSString stringWithFormat:@"%@%@",self.domain,path];
+    NSMutableURLRequest *request = [self generateRequestWithURL:finalUrl method:@"GET" params:params cookies:cookies];
     
     [NSURLConnection sendAsynchronousRequest:request queue:self.operationQueue completionHandler:^(NSURLResponse * response, NSData *data, NSError *error) {
         if (!error) {
