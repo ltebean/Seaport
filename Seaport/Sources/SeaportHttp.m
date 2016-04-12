@@ -37,7 +37,7 @@
 
 - (void)sendRequestToPath:(NSString *)path method:(NSString *)method params:(NSDictionary *)params cookies:(NSDictionary *)cookies completionHandler:(void (^)(id)) completionHandler
 {
-    NSString *finalUrl = [NSString stringWithFormat:@"http://%@%@",self.domain,path];
+    NSString *finalUrl = [NSString stringWithFormat:@"%@%@",self.domain,path];
     NSMutableURLRequest *request = [self generateRequestWithURL:finalUrl method:method params:params cookies:cookies];
     
     [NSURLConnection sendAsynchronousRequest:request queue:self.operationQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {

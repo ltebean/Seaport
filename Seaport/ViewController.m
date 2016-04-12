@@ -13,7 +13,7 @@
 
 
 #define APP_NAME @"demo-app"
-#define SERVER_HOST @"106.187.100.229"
+#define SERVER_HOST @"http://106.187.100.229"
 #define SERVER_PORT @"5984"
 #define DB_NAME @"seaport"
 

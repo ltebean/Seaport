@@ -21,17 +21,17 @@
 		4913D3CE1928CA9C00DDA7E0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4913D3CC1928CA9C00DDA7E0 /* InfoPlist.strings */; };
 		4913D3D01928CA9C00DDA7E0 /* SeaportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4913D3CF1928CA9C00DDA7E0 /* SeaportTests.m */; };
 		4913D3F31928CB4F00DDA7E0 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4913D3F21928CB4F00DDA7E0 /* libz.dylib */; };
+		FA50CEF61CBCD18D00B3B1CC /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = FA50CEEC1CBCD18D00B3B1CC /* ioapi.c */; };
+		FA50CEF71CBCD18D00B3B1CC /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = FA50CEEE1CBCD18D00B3B1CC /* mztools.c */; };
+		FA50CEF81CBCD18D00B3B1CC /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = FA50CEF01CBCD18D00B3B1CC /* unzip.c */; };
+		FA50CEF91CBCD18D00B3B1CC /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = FA50CEF21CBCD18D00B3B1CC /* zip.c */; };
+		FA50CEFA1CBCD18D00B3B1CC /* SSZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = FA50CEF51CBCD18D00B3B1CC /* SSZipArchive.m */; };
+		FA50CEFF1CBCD1A800B3B1CC /* Seaport.m in Sources */ = {isa = PBXBuildFile; fileRef = FA50CEFC1CBCD1A800B3B1CC /* Seaport.m */; };
+		FA50CF001CBCD1A800B3B1CC /* SeaportHttp.m in Sources */ = {isa = PBXBuildFile; fileRef = FA50CEFE1CBCD1A800B3B1CC /* SeaportHttp.m */; };
 		FAD94C0C1CA2373600A85A71 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAD94C0B1CA2373600A85A71 /* Launch Screen.storyboard */; };
 		FAF926241963E55700D970A2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF926231963E55700D970A2 /* ViewController.m */; };
-		FAF926361963E55F00D970A2 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = FAF926281963E55F00D970A2 /* ioapi.c */; };
-		FAF926371963E55F00D970A2 /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = FAF9262A1963E55F00D970A2 /* mztools.c */; };
-		FAF926381963E55F00D970A2 /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = FAF9262C1963E55F00D970A2 /* unzip.c */; };
-		FAF926391963E55F00D970A2 /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = FAF9262E1963E55F00D970A2 /* zip.c */; };
-		FAF9263A1963E55F00D970A2 /* SSZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF926311963E55F00D970A2 /* SSZipArchive.m */; };
 		FAF9263B1963E55F00D970A2 /* WebViewJavascriptBridge.js.txt in Resources */ = {isa = PBXBuildFile; fileRef = FAF926341963E55F00D970A2 /* WebViewJavascriptBridge.js.txt */; };
 		FAF9263C1963E55F00D970A2 /* WebViewJavascriptBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF926351963E55F00D970A2 /* WebViewJavascriptBridge.m */; };
-		FAF926431963E56900D970A2 /* Seaport.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF9263E1963E56900D970A2 /* Seaport.m */; };
-		FAF926441963E56900D970A2 /* SeaportHttp.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF926401963E56900D970A2 /* SeaportHttp.m */; };
 		FAF926451963E56900D970A2 /* SeaportWebViewBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF926421963E56900D970A2 /* SeaportWebViewBridge.m */; };
 /* End PBXBuildFile section */
 
@@ -64,27 +64,27 @@
 		4913D3CD1928CA9C00DDA7E0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4913D3CF1928CA9C00DDA7E0 /* SeaportTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SeaportTests.m; sourceTree = "<group>"; };
 		4913D3F21928CB4F00DDA7E0 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		FA50CEEB1CBCD18D00B3B1CC /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
+		FA50CEEC1CBCD18D00B3B1CC /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
+		FA50CEED1CBCD18D00B3B1CC /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ioapi.h; sourceTree = "<group>"; };
+		FA50CEEE1CBCD18D00B3B1CC /* mztools.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mztools.c; sourceTree = "<group>"; };
+		FA50CEEF1CBCD18D00B3B1CC /* mztools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mztools.h; sourceTree = "<group>"; };
+		FA50CEF01CBCD18D00B3B1CC /* unzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unzip.c; sourceTree = "<group>"; };
+		FA50CEF11CBCD18D00B3B1CC /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unzip.h; sourceTree = "<group>"; };
+		FA50CEF21CBCD18D00B3B1CC /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zip.c; sourceTree = "<group>"; };
+		FA50CEF31CBCD18D00B3B1CC /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
+		FA50CEF41CBCD18D00B3B1CC /* SSZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSZipArchive.h; sourceTree = "<group>"; };
+		FA50CEF51CBCD18D00B3B1CC /* SSZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSZipArchive.m; sourceTree = "<group>"; };
+		FA50CEFB1CBCD1A800B3B1CC /* Seaport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Seaport.h; sourceTree = "<group>"; };
+		FA50CEFC1CBCD1A800B3B1CC /* Seaport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Seaport.m; sourceTree = "<group>"; };
+		FA50CEFD1CBCD1A800B3B1CC /* SeaportHttp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SeaportHttp.h; sourceTree = "<group>"; };
+		FA50CEFE1CBCD1A800B3B1CC /* SeaportHttp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SeaportHttp.m; sourceTree = "<group>"; };
 		FAD94C0B1CA2373600A85A71 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		FAF926221963E55700D970A2 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		FAF926231963E55700D970A2 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		FAF926271963E55F00D970A2 /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
-		FAF926281963E55F00D970A2 /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
-		FAF926291963E55F00D970A2 /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ioapi.h; sourceTree = "<group>"; };
-		FAF9262A1963E55F00D970A2 /* mztools.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mztools.c; sourceTree = "<group>"; };
-		FAF9262B1963E55F00D970A2 /* mztools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mztools.h; sourceTree = "<group>"; };
-		FAF9262C1963E55F00D970A2 /* unzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unzip.c; sourceTree = "<group>"; };
-		FAF9262D1963E55F00D970A2 /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unzip.h; sourceTree = "<group>"; };
-		FAF9262E1963E55F00D970A2 /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zip.c; sourceTree = "<group>"; };
-		FAF9262F1963E55F00D970A2 /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
-		FAF926301963E55F00D970A2 /* SSZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSZipArchive.h; sourceTree = "<group>"; };
-		FAF926311963E55F00D970A2 /* SSZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSZipArchive.m; sourceTree = "<group>"; };
 		FAF926331963E55F00D970A2 /* WebViewJavascriptBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewJavascriptBridge.h; sourceTree = "<group>"; };
 		FAF926341963E55F00D970A2 /* WebViewJavascriptBridge.js.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = WebViewJavascriptBridge.js.txt; sourceTree = "<group>"; };
 		FAF926351963E55F00D970A2 /* WebViewJavascriptBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewJavascriptBridge.m; sourceTree = "<group>"; };
-		FAF9263D1963E56900D970A2 /* Seaport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Seaport.h; sourceTree = "<group>"; };
-		FAF9263E1963E56900D970A2 /* Seaport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Seaport.m; sourceTree = "<group>"; };
-		FAF9263F1963E56900D970A2 /* SeaportHttp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SeaportHttp.h; sourceTree = "<group>"; };
-		FAF926401963E56900D970A2 /* SeaportHttp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SeaportHttp.m; sourceTree = "<group>"; };
 		FAF926411963E56900D970A2 /* SeaportWebViewBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SeaportWebViewBridge.h; sourceTree = "<group>"; };
 		FAF926421963E56900D970A2 /* SeaportWebViewBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SeaportWebViewBridge.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -148,6 +148,7 @@
 		4913D3AA1928CA9C00DDA7E0 /* Seaport */ = {
 			isa = PBXGroup;
 			children = (
+				FA50CEE81CBCD16C00B3B1CC /* Sources */,
 				FAF926211963E54800D970A2 /* lib */,
 				4913D3B31928CA9C00DDA7E0 /* AppDelegate.h */,
 				4913D3B41928CA9C00DDA7E0 /* AppDelegate.m */,
@@ -190,45 +191,52 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		FAF926211963E54800D970A2 /* lib */ = {
+		FA50CEE81CBCD16C00B3B1CC /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				FAF9263D1963E56900D970A2 /* Seaport.h */,
-				FAF9263E1963E56900D970A2 /* Seaport.m */,
-				FAF9263F1963E56900D970A2 /* SeaportHttp.h */,
-				FAF926401963E56900D970A2 /* SeaportHttp.m */,
-				FAF926411963E56900D970A2 /* SeaportWebViewBridge.h */,
-				FAF926421963E56900D970A2 /* SeaportWebViewBridge.m */,
-				FAF926251963E55F00D970A2 /* SSZipArchive */,
-				FAF926321963E55F00D970A2 /* WebViewJavascriptBridge */,
+				FA50CEFB1CBCD1A800B3B1CC /* Seaport.h */,
+				FA50CEFC1CBCD1A800B3B1CC /* Seaport.m */,
+				FA50CEFD1CBCD1A800B3B1CC /* SeaportHttp.h */,
+				FA50CEFE1CBCD1A800B3B1CC /* SeaportHttp.m */,
+				FA50CEE91CBCD18D00B3B1CC /* SSZipArchive */,
 			);
-			name = lib;
+			path = Sources;
 			sourceTree = "<group>";
 		};
-		FAF926251963E55F00D970A2 /* SSZipArchive */ = {
+		FA50CEE91CBCD18D00B3B1CC /* SSZipArchive */ = {
 			isa = PBXGroup;
 			children = (
-				FAF926261963E55F00D970A2 /* minizip */,
-				FAF926301963E55F00D970A2 /* SSZipArchive.h */,
-				FAF926311963E55F00D970A2 /* SSZipArchive.m */,
+				FA50CEEA1CBCD18D00B3B1CC /* minizip */,
+				FA50CEF41CBCD18D00B3B1CC /* SSZipArchive.h */,
+				FA50CEF51CBCD18D00B3B1CC /* SSZipArchive.m */,
 			);
 			path = SSZipArchive;
 			sourceTree = "<group>";
 		};
-		FAF926261963E55F00D970A2 /* minizip */ = {
+		FA50CEEA1CBCD18D00B3B1CC /* minizip */ = {
 			isa = PBXGroup;
 			children = (
-				FAF926271963E55F00D970A2 /* crypt.h */,
-				FAF926281963E55F00D970A2 /* ioapi.c */,
-				FAF926291963E55F00D970A2 /* ioapi.h */,
-				FAF9262A1963E55F00D970A2 /* mztools.c */,
-				FAF9262B1963E55F00D970A2 /* mztools.h */,
-				FAF9262C1963E55F00D970A2 /* unzip.c */,
-				FAF9262D1963E55F00D970A2 /* unzip.h */,
-				FAF9262E1963E55F00D970A2 /* zip.c */,
-				FAF9262F1963E55F00D970A2 /* zip.h */,
+				FA50CEEB1CBCD18D00B3B1CC /* crypt.h */,
+				FA50CEEC1CBCD18D00B3B1CC /* ioapi.c */,
+				FA50CEED1CBCD18D00B3B1CC /* ioapi.h */,
+				FA50CEEE1CBCD18D00B3B1CC /* mztools.c */,
+				FA50CEEF1CBCD18D00B3B1CC /* mztools.h */,
+				FA50CEF01CBCD18D00B3B1CC /* unzip.c */,
+				FA50CEF11CBCD18D00B3B1CC /* unzip.h */,
+				FA50CEF21CBCD18D00B3B1CC /* zip.c */,
+				FA50CEF31CBCD18D00B3B1CC /* zip.h */,
 			);
 			path = minizip;
+			sourceTree = "<group>";
+		};
+		FAF926211963E54800D970A2 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				FAF926411963E56900D970A2 /* SeaportWebViewBridge.h */,
+				FAF926421963E56900D970A2 /* SeaportWebViewBridge.m */,
+				FAF926321963E55F00D970A2 /* WebViewJavascriptBridge */,
+			);
+			name = lib;
 			sourceTree = "<group>";
 		};
 		FAF926321963E55F00D970A2 /* WebViewJavascriptBridge */ = {
@@ -340,18 +348,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FAF926381963E55F00D970A2 /* unzip.c in Sources */,
+				FA50CF001CBCD1A800B3B1CC /* SeaportHttp.m in Sources */,
+				FA50CEF61CBCD18D00B3B1CC /* ioapi.c in Sources */,
 				FAF9263C1963E55F00D970A2 /* WebViewJavascriptBridge.m in Sources */,
+				FA50CEFA1CBCD18D00B3B1CC /* SSZipArchive.m in Sources */,
 				FAF926241963E55700D970A2 /* ViewController.m in Sources */,
+				FA50CEF71CBCD18D00B3B1CC /* mztools.c in Sources */,
 				4913D3B51928CA9C00DDA7E0 /* AppDelegate.m in Sources */,
-				FAF926361963E55F00D970A2 /* ioapi.c in Sources */,
+				FA50CEF81CBCD18D00B3B1CC /* unzip.c in Sources */,
 				FAF926451963E56900D970A2 /* SeaportWebViewBridge.m in Sources */,
-				FAF9263A1963E55F00D970A2 /* SSZipArchive.m in Sources */,
-				FAF926391963E55F00D970A2 /* zip.c in Sources */,
+				FA50CEF91CBCD18D00B3B1CC /* zip.c in Sources */,
 				4913D3B11928CA9C00DDA7E0 /* main.m in Sources */,
-				FAF926431963E56900D970A2 /* Seaport.m in Sources */,
-				FAF926371963E55F00D970A2 /* mztools.c in Sources */,
-				FAF926441963E56900D970A2 /* SeaportHttp.m in Sources */,
+				FA50CEFF1CBCD1A800B3B1CC /* Seaport.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
