@@ -8,7 +8,6 @@
 
 #import "SeaportWebViewBridge.h"
 #import "WebViewJavascriptBridge.h"
-#import "SeaportHttp.h"
 
 @interface SeaportWebViewBridge()
 @property(nonatomic,strong) NSDictionary *param;
@@ -45,19 +44,19 @@
             responseCallback([[NSUserDefaults standardUserDefaults] objectForKey:data]);
         }];
         
-        [self.bridge registerHandler:@"http:get" handler:^(id data, WVJBResponseCallback responseCallback){
-            SeaportHttp* http = [[SeaportHttp alloc]initWithDomain:data[@"domain"]];
-            [http sendRequestToPath:data[@"path"] method:@"GET" params:data[@"params"] cookies:data[@"cookies"] completionHandler:^(id result) {
-                responseCallback(result);
-            }];
-        }];
-        
-        [self.bridge registerHandler:@"http:post" handler:^(id data, WVJBResponseCallback responseCallback){
-            SeaportHttp* http = [[SeaportHttp alloc]initWithDomain:data[@"domain"]];
-            [http postJsonToPath:data[@"path"] body:data[@"body"] cookies:data[@"cookie"] completionHandler:^(id result) {
-                responseCallback(result);
-            }];
-        }];
+//        [self.bridge registerHandler:@"http:get" handler:^(id data, WVJBResponseCallback responseCallback){
+//            SeaportHttp* http = [[SeaportHttp alloc]initWithDomain:data[@"domain"]];
+//            [http sendRequestToPath:data[@"path"] method:@"GET" params:data[@"params"] cookies:data[@"cookies"] completionHandler:^(id result) {
+//                responseCallback(result);
+//            }];
+//        }];
+//        
+//        [self.bridge registerHandler:@"http:post" handler:^(id data, WVJBResponseCallback responseCallback){
+//            SeaportHttp* http = [[SeaportHttp alloc]initWithDomain:data[@"domain"]];
+//            [http postJsonToPath:data[@"path"] body:data[@"body"] cookies:data[@"cookie"] completionHandler:^(id result) {
+//                responseCallback(result);
+//            }];
+//        }];
         
         [self.bridge registerHandler:@"param:get" handler:^(id data, WVJBResponseCallback responseCallback){
             responseCallback(self.param[data]);

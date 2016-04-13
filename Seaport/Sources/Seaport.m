@@ -7,7 +7,6 @@
 //
 
 #import "Seaport.h"
-#import "SeaportHttp.h"
 #import "SSZipArchive.h"
 
 #define CONFIG_FILE @"config.plist"
@@ -25,7 +24,7 @@ typedef enum {
 @property (nonatomic, copy) NSString *appName;
 @property (nonatomic, copy) NSString *dbName;
 @property (nonatomic, copy) NSString *appDirectory;
-@property (nonatomic, strong) SeaportHttp *http;
+@property (nonatomic, copy) NSString *serverAddress;
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
 @property (atomic) BOOL inOperation;
 @end
@@ -40,11 +39,9 @@ typedef enum {
         if (![self loadConfig]) {
             [self saveConfig:@{@"packages":@{}}];
         }
+        self.serverAddress = [NSString stringWithFormat:@"%@:%@", host, port];
         self.operationQueue = [[NSOperationQueue alloc] init];
-        [self.operationQueue setMaxConcurrentOperationCount:1];
-        NSString *serverAddress = [NSString stringWithFormat:@"%@:%@", host, port];
-        
-        self.http = [[SeaportHttp alloc] initWithDomain:serverAddress operationQueue:self.operationQueue];
+        self.operationQueue.maxConcurrentOperationCount = 1;
     }
     return self;
 }
@@ -56,9 +53,7 @@ typedef enum {
     NSURL *seaportDirectory = [documentsDirectoryURL URLByAppendingPathComponent:ROOT_DIRECTORY];
     NSString *appDirectory = [seaportDirectory URLByAppendingPathComponent:appName].path;
     
-    //    NSLog(@"%@",appDirectory);
-    
-    BOOL exists= [FM fileExistsAtPath:appDirectory];
+    BOOL exists = [FM fileExistsAtPath:appDirectory];
     if (!exists) {
         [FM removeItemAtPath:seaportDirectory.path error:nil];
         [FM createDirectoryAtPath:appDirectory withIntermediateDirectories:YES attributes:nil error:nil];
@@ -96,8 +91,21 @@ typedef enum {
 
 - (void)updateRemote
 {
-    NSString *path = [NSString stringWithFormat:@"/%@/_design/app/_view/byApp",self.dbName];
-    [self.http sendRequestToPath:path method:@"GET" params:@{@"key":[NSString stringWithFormat:@"\"%@\"",self.appName]} cookies:nil completionHandler:^(NSDictionary *result) {
+    NSString *urlString = [[NSString stringWithFormat:@"%@/%@/_design/app/_view/byApp?key=%@", self.serverAddress, self.dbName, [NSString stringWithFormat:@"\"%@\"",self.appName]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    [NSURLConnection sendAsynchronousRequest:request queue:self.operationQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+        if (error) {
+            [self.deletage seaport:self didFailedToPullConfigWithError:error];
+            return;
+        }
+        NSError *e;
+        NSDictionary *result = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&e];
+        if (e || !result) {
+            [self.deletage seaport:self didFailedToPullConfigWithError:e];
+            return;
+        }
         NSDictionary *localPackages = [self loadConfig][@"packages"];
         for (NSDictionary *row in result[@"rows"]) {
             NSDictionary *package = row[@"value"];
@@ -132,8 +140,15 @@ typedef enum {
     
     [self.deletage seaport:self didStartDownloadPackage:packageName version:version];
     
-    NSString *path = [NSString stringWithFormat:@"/%@%@",self.dbName, package[@"zip"]];
-    [self.http downloadFileAtPath:path params:nil cookies:nil completionHandler:^(NSData *data) {
+    NSString *urlString = [NSString stringWithFormat:@"%@/%@%@",self.serverAddress, self.dbName, package[@"zip"]];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    [NSURLConnection sendAsynchronousRequest:request queue:self.operationQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+        if (error) {
+            [self.deletage seaport:self didFailDownloadPackage:packageName version:version withError:[NSError errorWithDomain:ERROR_DOMAIN code:DownloadZipError userInfo:nil]];
+            return;
+        }
         if (!data) {
             [self.deletage seaport:self didFailDownloadPackage:packageName version:version withError:[NSError errorWithDomain:ERROR_DOMAIN code:DownloadZipError userInfo:nil]];
             return;
@@ -145,8 +160,7 @@ typedef enum {
         }
         
         //unzip
-        NSError *error;
-        if (![SSZipArchive unzipFileAtPath:zipPath toDestination:destinationPath overwrite:YES password:nil error:&error]) {
+        if (![SSZipArchive unzipFileAtPath:zipPath toDestination:destinationPath]) {
             [FM removeItemAtPath:zipPath error:nil];
             [self.deletage seaport:self didFailDownloadPackage:packageName version:version withError:[NSError errorWithDomain:ERROR_DOMAIN code:UnZipError userInfo:nil]];
             return;

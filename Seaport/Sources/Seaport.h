@@ -14,6 +14,7 @@
 - (void)seaport:(Seaport *)seaport didFinishDownloadPackage:(NSString *)packageName version:(NSString *)version;
 - (void)seaport:(Seaport *)seaport didFailDownloadPackage:(NSString *)packageName version:(NSString *)version withError:(NSError *)error;
 - (void)seaport:(Seaport *)seaport didFinishUpdatePackage:(NSString *)packageName version:(NSString *)version;
+- (void)seaport:(Seaport *)seaport didFailedToPullConfigWithError:(NSError *)error;
 @end
 
 

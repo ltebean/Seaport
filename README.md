@@ -10,7 +10,7 @@ Seaport makes it easy to ship static resources to ios client. You just need to a
 
 ##Getting Started
 
-Seaport provides a default [package cloud](http://223.4.15.141:9984/seaport), and with [seaport-client](https://www.npmjs.org/package/seaport-client) you can easily manage your packages.
+Seaport provides a default [package cloud](http://106.187.100.229:5984/seaport), and with [seaport-client](https://www.npmjs.org/package/seaport-client) you can easily manage your packages.
 
 ####1. Install seaport-client
 
@@ -50,8 +50,8 @@ On ios side, first init a Seaport client by specifing the appName and the addres
 
 ```objective-c
 Seaport *seaport = [[Seaport alloc] initWithAppName:@"TestApp"
-                                         serverHost:@"223.4.15.141"
-                                         sevrerPort:@"9984"
+                                         serverHost:@"http://106.187.100.229"
+                                         sevrerPort:@"5984"
                                              dbName:@"seaport"];
 ```
 
@@ -94,6 +94,6 @@ Seaport protocal:
 
 Seaport uses couchdb as its backend, so you must install couchdb first. 
 
-After finished, create a database and import all the views and examples by replicating from "http://223.4.15.141:9984/seaport"
+After finished, create a database and import all the views and examples by replicating from "http://106.187.100.229:5984/seaport"
 
 Finally change the host, port, dbname config to the correspoding value in your code.

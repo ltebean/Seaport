@@ -8,11 +8,10 @@
 
 #import "ViewController.h"
 #import "Seaport.h"
-#import "SeaportHttp.h"
 #import "SeaportWebViewBridge.h"
 
 
-#define APP_NAME @"MLGift"
+#define APP_NAME @"MLGiftDev"
 #define SERVER_HOST @"http://106.187.100.229"
 #define SERVER_PORT @"5984"
 #define DB_NAME @"seaport"
@@ -63,24 +62,29 @@
     [self.seaport checkUpdate];
 }
 
+- (void)seaport:(Seaport *)seaport didFailedToPullConfigWithError:(NSError *)error
+{
+    NSLog(@"failed to pull config: %@", error);
+}
+
 - (void)seaport:(Seaport *)seaport didStartDownloadPackage:(NSString *)packageName version:(NSString *)version
 {
-    NSLog(@"start download package: %@@%@",packageName,version);
+    NSLog(@"start download package: %@@%@", packageName, version);
 }
 
 - (void)seaport:(Seaport *)seaport didFinishDownloadPackage:(NSString *)packageName version:(NSString *)version
 {
-    NSLog(@"finish download package: %@@%@",packageName,version);
+    NSLog(@"finish download package: %@@%@", packageName, version);
 }
 
 - (void)seaport:(Seaport *)seaport didFailDownloadPackage:(NSString *)packageName version:(NSString *)version withError:(NSError *)error
 {
-    NSLog(@"faild download package: %@@%@",packageName,version);
+    NSLog(@"faild download package: %@@%@", packageName, version);
 }
 
 - (void)seaport:(Seaport *)seaport didFinishUpdatePackage:(NSString *)packageName version:(NSString *)version
 {
-    NSLog(@"update local package: %@@%@",packageName,version);
+    NSLog(@"update local package: %@@%@", packageName, version);
 }
 
 
