@@ -15,31 +15,41 @@
 #define FM [NSFileManager defaultManager]
 #define ROOT_DIRECTORY @"seaport"
 
+
+@implementation PackageRequirement
+@end
+
 typedef enum {
-    DownloadZipError = -1000,
+    CheckUpdatesError = 1000,
+    DownloadZipError,
     UnZipError,
 } Error;
 
 @interface Seaport()
 @property (nonatomic, copy) NSString *appName;
-@property (nonatomic, copy) NSString *dbName;
 @property (nonatomic, copy) NSString *appDirectory;
 @property (nonatomic, copy) NSString *serverAddress;
+@property (nonatomic, copy) NSString *secret;
+@property (nonatomic, copy) NSArray *packageRequirements;
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
 @property (atomic) BOOL inOperation;
 @end
 
 @implementation Seaport
 
-- (id)initWithAppName:(NSString *)appName serverHost:(NSString *)host sevrerPort:(NSString *)port dbName:(NSString *)dbName {
+
+- (id)initWithAppName:(NSString *)appName secret:(NSString *)secret serverAddress:(NSString *)serverAddress packageRequirements:(NSArray *)packageRequirements;
+{
     if (self = [super init]) {
         self.appName = appName;
-        self.dbName = dbName;
+        self.secret = secret;
+        self.serverAddress = serverAddress;
+        self.packageRequirements = packageRequirements;
         self.appDirectory = [self createAppFolderWithAppName:self.appName];
+        NSLog(@"app directory: %@", self.appDirectory);
         if (![self loadConfig]) {
             [self saveConfig:@{@"packages":@{}}];
         }
-        self.serverAddress = [NSString stringWithFormat:@"%@:%@", host, port];
         self.operationQueue = [[NSOperationQueue alloc] init];
         self.operationQueue.maxConcurrentOperationCount = 1;
     }
@@ -61,7 +71,7 @@ typedef enum {
     return appDirectory;
 }
 
-- (void)checkUpdate
+- (void)checkUpdates
 {
     [self updateLocal];
     [self updateRemote];
@@ -70,7 +80,7 @@ typedef enum {
 - (void)updateLocal
 {
     @synchronized(self) {
-        NSMutableDictionary *config=[self loadConfig];
+        NSMutableDictionary *config = [self loadConfig];
         NSMutableDictionary *packages = config[@"packages"];
         for (NSString *packageName in [packages allKeys]) {
             NSMutableDictionary *package = packages[packageName];
@@ -91,9 +101,18 @@ typedef enum {
 
 - (void)updateRemote
 {
-    NSString *urlString = [[NSString stringWithFormat:@"%@/%@/_design/app/_view/byApp?key=%@", self.serverAddress, self.dbName, [NSString stringWithFormat:@"\"%@\"",self.appName]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *urlString = [NSString stringWithFormat:@"%@/api/v1/app/%@/updates", self.serverAddress, self.appName];
     NSURL *url = [NSURL URLWithString:urlString];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    NSDictionary *body = @{
+        @"secret": self.secret,
+        @"packageRequirements": self.packageRequirements
+    };
+    NSData *bodyData = [NSJSONSerialization dataWithJSONObject:body options:NSJSONWritingPrettyPrinted error:nil];
+    [request setHTTPMethod:@"POST"];
+    [request setHTTPBody:bodyData];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     
     [NSURLConnection sendAsynchronousRequest:request queue:self.operationQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
         if (error) {
@@ -106,17 +125,18 @@ typedef enum {
             [self.deletage seaport:self didFailedToPullConfigWithError:e];
             return;
         }
+        if ([result[@"code"] integerValue] != 0) {
+            NSError *error = [NSError errorWithDomain:ERROR_DOMAIN code:CheckUpdatesError userInfo:result];
+            [self.deletage seaport:self didFailedToPullConfigWithError:error];
+            return;
+        }
         NSDictionary *localPackages = [self loadConfig][@"packages"];
-        for (NSDictionary *row in result[@"rows"]) {
-            NSDictionary *package = row[@"value"];
-            NSString *packageName = package[@"packageName"];
+        for (NSDictionary *package in result[@"packages"]) {
+            NSString *packageName = package[@"name"];
             NSDictionary *localPackage = localPackages[packageName];
-            if (!package[@"activeVersion"]) {
-                continue;
-            }
-            BOOL localEqualToRemote = [localPackage[@"available"] isEqualToString:package[@"activeVersion"]];
+            BOOL localEqualToRemote = [localPackage[@"available"] isEqualToString:package[@"version"]];
             if (!localPackage || !localEqualToRemote) {
-                [self updatePackage:package toVersion:package[@"activeVersion"]];
+                [self updatePackage:package toVersion:package[@"version"]];
             }
         }
     }];
@@ -130,7 +150,7 @@ typedef enum {
 
 - (void)updatePackage:(NSDictionary *)package toVersion:(NSString *)version
 {
-    NSString *packageName = package[@"packageName"];
+    NSString *packageName = package[@"name"];
     NSString *destinationPath = [self packagePathWithName:packageName version:version];
     NSString *zipPath = [destinationPath stringByAppendingString:@".zip"];
     
@@ -140,8 +160,7 @@ typedef enum {
     
     [self.deletage seaport:self didStartDownloadPackage:packageName version:version];
     
-    NSString *urlString = [NSString stringWithFormat:@"%@/%@%@",self.serverAddress, self.dbName, package[@"zip"]];
-    NSURL *url = [NSURL URLWithString:urlString];
+    NSURL *url = [NSURL URLWithString:package[@"url"]];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     
     [NSURLConnection sendAsynchronousRequest:request queue:self.operationQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {

@@ -8,6 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+@interface PackageRequirement : NSObject
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *versionRange;
+@end
+
+
 @class Seaport;
 @protocol SeaportDelegate<NSObject>
 - (void)seaport:(Seaport *)seaport didStartDownloadPackage:(NSString *)packageName version:(NSString *)version;
@@ -20,7 +26,7 @@
 
 @interface Seaport : NSObject
 @property(nonatomic,weak) id<SeaportDelegate> deletage;
-- (id)initWithAppName:(NSString *)appName serverHost:(NSString *)host sevrerPort:(NSString *)port dbName:(NSString *)dbName;
-- (void)checkUpdate;
+- (id)initWithAppName:(NSString *)appName secret:(NSString *)secret serverAddress:(NSString *)serverAddress packageRequirements:(NSArray *)packageRequirements;
+- (void)checkUpdates;
 - (NSString *)packagePath:(NSString *)packageName;
 @end

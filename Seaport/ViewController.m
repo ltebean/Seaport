@@ -11,15 +11,9 @@
 #import "SeaportWebViewBridge.h"
 
 
-#define APP_NAME @"MLGiftDev"
-#define SERVER_HOST @"http://106.187.100.229"
-#define SERVER_PORT @"5984"
-#define DB_NAME @"seaport"
-
-@interface ViewController  () <UIWebViewDelegate,SeaportDelegate>
+@interface ViewController  () <UIWebViewDelegate, SeaportDelegate>
 @property (nonatomic,strong) Seaport *seaport ;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
-@property (strong,nonatomic) SeaportWebViewBridge *bridge;
 @end
 
 @implementation ViewController
@@ -27,11 +21,16 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.seaport = [[Seaport alloc] initWithAppName:APP_NAME serverHost:SERVER_HOST sevrerPort:SERVER_PORT dbName:DB_NAME];
+    
+    NSArray *packageRequirements = @[
+        @{@"name": @"test", @"versionRange": @">1.0.0"}
+    ];
+    
+    self.seaport = [[Seaport alloc] initWithAppName:@"test"
+                                             secret:@"test"
+                                      serverAddress:@"http://localhost:8080"
+                                packageRequirements:packageRequirements];
     self.seaport.deletage=self;
-    self.bridge = [SeaportWebViewBridge bridgeForWebView:self.webView param:@{@"city":@"shanghai",@"name": @"ltebean"} dataHandler:^(id data) {
-        NSLog(@"receive data: %@",data);
-    }];
 }
 
 
@@ -41,25 +40,18 @@
 
 - (IBAction)refresh:(id)sender {
     
-    NSString *rootPath = [self.seaport packagePath:@"p1"];
+    NSString *rootPath = [self.seaport packagePath:@"test"];
     if(rootPath){
         NSString *filePath = [rootPath stringByAppendingPathComponent:@"index.html"];
         NSURL *localURL=[NSURL fileURLWithPath:filePath];
-        
-//        NSURL *debugURL=[NSURL URLWithString:@"http://localhost:8080/index.html"];
-        
         NSURLRequest *request=[NSURLRequest requestWithURL:localURL];
         [self.webView loadRequest:request];
     }
 }
 
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    
-}
 
 - (IBAction)check:(id)sender {
-    [self.seaport checkUpdate];
+    [self.seaport checkUpdates];
 }
 
 - (void)seaport:(Seaport *)seaport didFailedToPullConfigWithError:(NSError *)error
