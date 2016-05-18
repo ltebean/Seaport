@@ -10,49 +10,39 @@ Seaport makes it easy to ship static resources to ios client. You just need to a
 
 ##Getting Started
 
-Seaport provides a default [package cloud](http://106.187.100.229:5984/seaport), and with [seaport-client](https://www.npmjs.org/package/seaport-client) you can easily manage your packages.
+#### 1. Set up the server
+You can find the instruction here: https://github.com/ltebean/seaport-server
 
-####1. Install seaport-client
+####2. Install seaport-client
 
-Node.js environment is required, then install seaport-client by:
+You can use seaport-client to publish packages. It's written in Node.js, you can install it by:
 
 ```
 npm install -g seaport-client
 ```
 
-####2. Register an Account
-
-Run `seaport adduser`, specify your username and password:
-
-```
-seaport adduser -u ltebean -s test
-```
 
 ####3. Publish a Package
 
-Run `seaport publish`, specify the appName, packageName, and current version, the current working directory will be packed into a zip and published to the package cloud:
+Run `seaport publish`, specify the  package name version, the current working directory will be packed into a zip and published to the package cloud:
 
 ```
-seaport publish -a TestApp -p index -v 1.0.0
-```
-
-####4. Activate a specific version
-
-For example, activate version 1.1.0 of package 'index' with appName 'TestApp':
-```
-seaport activate -a TestApp -p index -v 1.1.0
-
+seaport publish -p index -v 1.0.0
 ```
 
 
-####5. Intergrate Seaport in Your App
-On ios side, first init a Seaport client by specifing the appName and the address of package cloud:
+####4. Intergrate Seaport in Your App
+On ios side, first init a Seaport client by specifying the server address and app secret
 
 ```objective-c
-Seaport *seaport = [[Seaport alloc] initWithAppName:@"TestApp"
-                                         serverHost:@"http://106.187.100.229"
-                                         sevrerPort:@"5984"
-                                             dbName:@"seaport"];
+NSArray *packageRequirements = @[
+        @{@"name": @"package1", @"versionRange": @">1.0.0"}
+    ];
+    
+    self.seaport = [[Seaport alloc] initWithAppName:@"TestApp"
+                                             secret:@"secret"
+                                      serverAddress:@"http://localhost:8080"
+                                packageRequirements:packageRequirements];
 ```
 
 Check whether there are some updates, usually it should be called when app starts:
@@ -61,7 +51,7 @@ Check whether there are some updates, usually it should be called when app start
 [seaport checkUpdate];
 ```
 
-Then you could ask Seaport where is your package's root path, then load static resources from that path:
+Then you could ask Seaport where is your package's root path, thus you can load static resources from that path:
 
 ```objective-c
 NSString *rootPath = [seaport packagePath:@"index"];
@@ -89,11 +79,3 @@ Seaport protocal:
   
 - (void)seaport:(Seaport *)seaport didFinishUpdatePackage:(NSString *)packageName version:(NSString *)version;  
 ```
-
-## Setup your own package cloud
-
-Seaport uses couchdb as its backend, so you must install couchdb first. 
-
-After finished, create a database and import all the views and examples by replicating from "http://106.187.100.229:5984/seaport"
-
-Finally change the host, port, dbname config to the correspoding value in your code.

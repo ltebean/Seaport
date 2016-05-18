@@ -23,11 +23,11 @@
     [super viewDidLoad];
     
     NSArray *packageRequirements = @[
-        @{@"name": @"test", @"versionRange": @">1.0.0"}
+        @{@"name": @"package1", @"versionRange": @">1.0.0"}
     ];
     
-    self.seaport = [[Seaport alloc] initWithAppName:@"test"
-                                             secret:@"test"
+    self.seaport = [[Seaport alloc] initWithAppName:@"TestApp"
+                                             secret:@"secret"
                                       serverAddress:@"http://localhost:8080"
                                 packageRequirements:packageRequirements];
     self.seaport.deletage=self;
@@ -40,7 +40,7 @@
 
 - (IBAction)refresh:(id)sender {
     
-    NSString *rootPath = [self.seaport packagePath:@"test"];
+    NSString *rootPath = [self.seaport packagePath:@"package1"];
     if(rootPath){
         NSString *filePath = [rootPath stringByAppendingPathComponent:@"index.html"];
         NSURL *localURL=[NSURL fileURLWithPath:filePath];

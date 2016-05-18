@@ -7,7 +7,7 @@
 //
 
 #import "Seaport.h"
-#import "SSZipArchive.h"
+#import <SSZipArchive/SSZipArchive.h>
 
 #define CONFIG_FILE @"config.plist"
 #define ERROR_DOMAIN @"io.seaport"
@@ -101,7 +101,7 @@ typedef enum {
 
 - (void)updateRemote
 {
-    NSString *urlString = [NSString stringWithFormat:@"%@/api/v1/app/%@/updates", self.serverAddress, self.appName];
+    NSString *urlString = [NSString stringWithFormat:@"%@/api/v1/app/updates", self.serverAddress];
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     NSDictionary *body = @{
