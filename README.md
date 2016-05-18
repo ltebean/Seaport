@@ -24,7 +24,7 @@ npm install -g seaport-client
 
 ####3. Publish a Package
 
-Run `seaport publish`, specify the  package name version, the current working directory will be packed into a zip and published to the package cloud:
+Run `seaport publish`, specify the package name and version, the current working directory will be packed into a zip and published to the package cloud:
 
 ```
 seaport publish -p index -v 1.0.0
@@ -36,13 +36,13 @@ On ios side, first init a Seaport client by specifying the server address and ap
 
 ```objective-c
 NSArray *packageRequirements = @[
-        @{@"name": @"package1", @"versionRange": @">1.0.0"}
-    ];
+    @{@"name": @"package1", @"versionRange": @">1.0.0"}
+];
     
-    self.seaport = [[Seaport alloc] initWithAppName:@"TestApp"
-                                             secret:@"secret"
-                                      serverAddress:@"http://localhost:8080"
-                                packageRequirements:packageRequirements];
+self.seaport = [[Seaport alloc] initWithAppName:@"TestApp"
+                                         secret:@"secret"
+                                  serverAddress:@"http://localhost:8080"
+                            packageRequirements:packageRequirements];
 ```
 
 Check whether there are some updates, usually it should be called when app starts:
