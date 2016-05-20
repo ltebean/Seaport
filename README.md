@@ -7,7 +7,6 @@ Seaport makes it easy to ship static resources to ios client. You just need to a
 * remove unused package
 
 
-
 ##Getting Started
 
 #### 1. Set up the server
@@ -20,6 +19,8 @@ You can use seaport-client to publish packages. It's written in Node.js, you can
 ```
 npm install -g seaport-client
 ```
+
+Detailed usage can be found here: https://github.com/ltebean/seaport-client
 
 
 ####3. Publish a Package

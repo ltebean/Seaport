@@ -101,7 +101,7 @@ typedef enum {
 
 - (void)updateRemote
 {
-    NSString *urlString = [NSString stringWithFormat:@"%@/api/v1/app/updates", self.serverAddress];
+    NSString *urlString = [NSString stringWithFormat:@"%@/api/v1/check_updates", self.serverAddress];
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     NSDictionary *body = @{
@@ -125,13 +125,13 @@ typedef enum {
             [self.deletage seaport:self didFailedToPullConfigWithError:e];
             return;
         }
-        if ([result[@"code"] integerValue] != 0) {
+        if ([result[@"code"] integerValue] != 200) {
             NSError *error = [NSError errorWithDomain:ERROR_DOMAIN code:CheckUpdatesError userInfo:result];
             [self.deletage seaport:self didFailedToPullConfigWithError:error];
             return;
         }
         NSDictionary *localPackages = [self loadConfig][@"packages"];
-        for (NSDictionary *package in result[@"packages"]) {
+        for (NSDictionary *package in result[@"data"]) {
             NSString *packageName = package[@"name"];
             NSDictionary *localPackage = localPackages[packageName];
             BOOL localEqualToRemote = [localPackage[@"available"] isEqualToString:package[@"version"]];
