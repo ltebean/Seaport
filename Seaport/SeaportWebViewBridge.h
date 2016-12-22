@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface SeaportWebViewBridge : NSObject
-+ (SeaportWebViewBridge *)bridgeForWebView:(UIWebView *)webView param:(NSDictionary *)param dataHandler:(void (^)(id))handler;
-
+- (id)initWithWebView:(UIWebView *)webView viewController:(UIViewController *)vc param:(NSDictionary *)param handler:(void (^)(id)) handler;
 - (void)sendData:(id)data;
 @end
+

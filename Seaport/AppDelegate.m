@@ -7,12 +7,26 @@
 //
 
 #import "AppDelegate.h"
+#import "SeaportManager.h"
+#import "WebViewController.h"
+
+@interface AppDelegate()
+@property (nonatomic, strong) SeaportManager *seaportManager;
+@end
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    self.seaportManager = [SeaportManager shared];
+    
+    WebViewController *vc = [WebViewController instance];
+    vc.title = @"index";
+    vc.package = @"main";
+    vc.page = @"index.html";
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    self.window.rootViewController = nav;
     return YES;
 }
 							
@@ -36,6 +50,7 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [self.seaportManager checkUpdates];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

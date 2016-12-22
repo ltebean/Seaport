@@ -8,31 +8,29 @@
 
 #import "SeaportWebViewBridge.h"
 #import "WebViewJavascriptBridge.h"
+#import "WebViewController.h"
 
 @interface SeaportWebViewBridge()
-@property(nonatomic,strong) NSDictionary *param;
-@property(nonatomic,strong) WebViewJavascriptBridge *bridge;
-
+@property(nonatomic, strong) NSDictionary *param;
+@property(nonatomic, strong) WebViewJavascriptBridge *bridge;
+@property(nonatomic, weak) UIViewController *vc;
 @end
 
 @implementation SeaportWebViewBridge
 
 
-+ (SeaportWebViewBridge *)bridgeForWebView:(UIWebView *)webView param:(NSDictionary *)param dataHandler:(void (^)(id))handler;
-{
-    return [[SeaportWebViewBridge alloc] initWithWebView:webView param:param handler:handler];
-}
 
-- (id)initWithWebView:(UIWebView *)webView param:(NSDictionary *)param handler:(void (^)(id)) handler
+- (id)initWithWebView:(UIWebView *)webView viewController:(UIViewController *)vc param:(NSDictionary *)param handler:(void (^)(id)) handler
 
 {
     if (self = [super init]) {
         self.param = param;
+        self.vc = vc;
         self.bridge = [WebViewJavascriptBridge bridgeForWebView:webView handler:^(id data, WVJBResponseCallback responseCallback) {
             handler(data);
         }];
         
-        //[WebViewJavascriptBridge enableLogging];
+        [WebViewJavascriptBridge enableLogging];
         
         [self.bridge registerHandler:@"userdefaults:set" handler:^(id data, WVJBResponseCallback responseCallback){
             [[NSUserDefaults standardUserDefaults] setObject:data[@"value"] forKey:data[@"key"]];
@@ -44,19 +42,14 @@
             responseCallback([[NSUserDefaults standardUserDefaults] objectForKey:data]);
         }];
         
-//        [self.bridge registerHandler:@"http:get" handler:^(id data, WVJBResponseCallback responseCallback){
-//            SeaportHttp* http = [[SeaportHttp alloc]initWithDomain:data[@"domain"]];
-//            [http sendRequestToPath:data[@"path"] method:@"GET" params:data[@"params"] cookies:data[@"cookies"] completionHandler:^(id result) {
-//                responseCallback(result);
-//            }];
-//        }];
-//        
-//        [self.bridge registerHandler:@"http:post" handler:^(id data, WVJBResponseCallback responseCallback){
-//            SeaportHttp* http = [[SeaportHttp alloc]initWithDomain:data[@"domain"]];
-//            [http postJsonToPath:data[@"path"] body:data[@"body"] cookies:data[@"cookie"] completionHandler:^(id result) {
-//                responseCallback(result);
-//            }];
-//        }];
+        [self.bridge registerHandler:@"page:push" handler:^(id data, WVJBResponseCallback responseCallback){
+            WebViewController *vc = [WebViewController instance];
+            vc.title = data[@"title"];
+            vc.package = data[@"package"];
+            vc.page = data[@"page"];
+            vc.param = data[@"param"];
+            [self.vc.navigationController pushViewController:vc animated:YES];
+        }];
         
         [self.bridge registerHandler:@"param:get" handler:^(id data, WVJBResponseCallback responseCallback){
             responseCallback(self.param[data]);

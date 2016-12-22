@@ -23,9 +23,10 @@
 		4913D3F31928CB4F00DDA7E0 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4913D3F21928CB4F00DDA7E0 /* libz.dylib */; };
 		54DAE48A4B847ABD75DA3208 /* libPods-SeaportTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6170FCA38D3D075760CF466D /* libPods-SeaportTests.a */; };
 		841CE185E9457FD1F6454F88 /* libPods-Seaport.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 791ED51A2489115026349BE0 /* libPods-Seaport.a */; };
+		B355EA5A1E08CF02000BC172 /* SeaportManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B355EA591E08CF02000BC172 /* SeaportManager.m */; };
 		FA50CEFF1CBCD1A800B3B1CC /* Seaport.m in Sources */ = {isa = PBXBuildFile; fileRef = FA50CEFC1CBCD1A800B3B1CC /* Seaport.m */; };
 		FAD94C0C1CA2373600A85A71 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAD94C0B1CA2373600A85A71 /* Launch Screen.storyboard */; };
-		FAF926241963E55700D970A2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF926231963E55700D970A2 /* ViewController.m */; };
+		FAF926241963E55700D970A2 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF926231963E55700D970A2 /* WebViewController.m */; };
 		FAF9263B1963E55F00D970A2 /* WebViewJavascriptBridge.js.txt in Resources */ = {isa = PBXBuildFile; fileRef = FAF926341963E55F00D970A2 /* WebViewJavascriptBridge.js.txt */; };
 		FAF9263C1963E55F00D970A2 /* WebViewJavascriptBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF926351963E55F00D970A2 /* WebViewJavascriptBridge.m */; };
 		FAF926451963E56900D970A2 /* SeaportWebViewBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF926421963E56900D970A2 /* SeaportWebViewBridge.m */; };
@@ -66,11 +67,13 @@
 		6170FCA38D3D075760CF466D /* libPods-SeaportTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SeaportTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		787771C73B983B0D76C7C2EA /* Pods-SeaportTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SeaportTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SeaportTests/Pods-SeaportTests.release.xcconfig"; sourceTree = "<group>"; };
 		791ED51A2489115026349BE0 /* libPods-Seaport.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Seaport.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B355EA581E08CF02000BC172 /* SeaportManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SeaportManager.h; sourceTree = "<group>"; };
+		B355EA591E08CF02000BC172 /* SeaportManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SeaportManager.m; sourceTree = "<group>"; };
 		FA50CEFB1CBCD1A800B3B1CC /* Seaport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Seaport.h; sourceTree = "<group>"; };
 		FA50CEFC1CBCD1A800B3B1CC /* Seaport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Seaport.m; sourceTree = "<group>"; };
 		FAD94C0B1CA2373600A85A71 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
-		FAF926221963E55700D970A2 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		FAF926231963E55700D970A2 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		FAF926221963E55700D970A2 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
+		FAF926231963E55700D970A2 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
 		FAF926331963E55F00D970A2 /* WebViewJavascriptBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewJavascriptBridge.h; sourceTree = "<group>"; };
 		FAF926341963E55F00D970A2 /* WebViewJavascriptBridge.js.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = WebViewJavascriptBridge.js.txt; sourceTree = "<group>"; };
 		FAF926351963E55F00D970A2 /* WebViewJavascriptBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewJavascriptBridge.m; sourceTree = "<group>"; };
@@ -157,8 +160,10 @@
 				FAF926211963E54800D970A2 /* lib */,
 				4913D3B31928CA9C00DDA7E0 /* AppDelegate.h */,
 				4913D3B41928CA9C00DDA7E0 /* AppDelegate.m */,
-				FAF926221963E55700D970A2 /* ViewController.h */,
-				FAF926231963E55700D970A2 /* ViewController.m */,
+				FAF926221963E55700D970A2 /* WebViewController.h */,
+				FAF926231963E55700D970A2 /* WebViewController.m */,
+				B355EA581E08CF02000BC172 /* SeaportManager.h */,
+				B355EA591E08CF02000BC172 /* SeaportManager.m */,
 				FAD94C0B1CA2373600A85A71 /* Launch Screen.storyboard */,
 				4913D3B61928CA9C00DDA7E0 /* Main.storyboard */,
 				4913D3BC1928CA9C00DDA7E0 /* Images.xcassets */,
@@ -232,12 +237,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4913D3D31928CA9C00DDA7E0 /* Build configuration list for PBXNativeTarget "Seaport" */;
 			buildPhases = (
-				BB1CF2F9802B6AD758648A74 /* 📦 Check Pods Manifest.lock */,
+				BB1CF2F9802B6AD758648A74 /* [CP] Check Pods Manifest.lock */,
 				4913D39D1928CA9C00DDA7E0 /* Sources */,
 				4913D39E1928CA9C00DDA7E0 /* Frameworks */,
 				4913D39F1928CA9C00DDA7E0 /* Resources */,
-				72604A2321C49064A460BFD5 /* 📦 Embed Pods Frameworks */,
-				97B847A813B49EFDE40419CA /* 📦 Copy Pods Resources */,
+				72604A2321C49064A460BFD5 /* [CP] Embed Pods Frameworks */,
+				97B847A813B49EFDE40419CA /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -252,12 +257,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4913D3D61928CA9C00DDA7E0 /* Build configuration list for PBXNativeTarget "SeaportTests" */;
 			buildPhases = (
-				ED9259302CB20C4740A1A5D2 /* 📦 Check Pods Manifest.lock */,
+				ED9259302CB20C4740A1A5D2 /* [CP] Check Pods Manifest.lock */,
 				4913D3BE1928CA9C00DDA7E0 /* Sources */,
 				4913D3BF1928CA9C00DDA7E0 /* Frameworks */,
 				4913D3C01928CA9C00DDA7E0 /* Resources */,
-				C582C5EC2FE3427521D8D7D1 /* 📦 Embed Pods Frameworks */,
-				87D76B5AE609F6D6C58B7F0F /* 📦 Copy Pods Resources */,
+				C582C5EC2FE3427521D8D7D1 /* [CP] Embed Pods Frameworks */,
+				87D76B5AE609F6D6C58B7F0F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -326,14 +331,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		72604A2321C49064A460BFD5 /* 📦 Embed Pods Frameworks */ = {
+		72604A2321C49064A460BFD5 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -341,14 +346,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Seaport/Pods-Seaport-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		87D76B5AE609F6D6C58B7F0F /* 📦 Copy Pods Resources */ = {
+		87D76B5AE609F6D6C58B7F0F /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -356,14 +361,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SeaportTests/Pods-SeaportTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		97B847A813B49EFDE40419CA /* 📦 Copy Pods Resources */ = {
+		97B847A813B49EFDE40419CA /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -371,29 +376,29 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Seaport/Pods-Seaport-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		BB1CF2F9802B6AD758648A74 /* 📦 Check Pods Manifest.lock */ = {
+		BB1CF2F9802B6AD758648A74 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		C582C5EC2FE3427521D8D7D1 /* 📦 Embed Pods Frameworks */ = {
+		C582C5EC2FE3427521D8D7D1 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -401,19 +406,19 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SeaportTests/Pods-SeaportTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		ED9259302CB20C4740A1A5D2 /* 📦 Check Pods Manifest.lock */ = {
+		ED9259302CB20C4740A1A5D2 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -423,8 +428,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B355EA5A1E08CF02000BC172 /* SeaportManager.m in Sources */,
 				FAF9263C1963E55F00D970A2 /* WebViewJavascriptBridge.m in Sources */,
-				FAF926241963E55700D970A2 /* ViewController.m in Sources */,
+				FAF926241963E55700D970A2 /* WebViewController.m in Sources */,
 				4913D3B51928CA9C00DDA7E0 /* AppDelegate.m in Sources */,
 				FAF926451963E56900D970A2 /* SeaportWebViewBridge.m in Sources */,
 				4913D3B11928CA9C00DDA7E0 /* main.m in Sources */,
